@@ -14,17 +14,15 @@
 Summary:	Another one web indexing and searching system for a small domain or intranet
 Summary(pl):	Kolejny System indeksowania i przeszukiwania www dla ma³ych domen i intranetu
 Name:		mnogosearch
-Version:	3.2.14
+Version:	3.2.18
 Release:	1
 License:	GPL v2+
 Group:		Networking/Utilities
 #Source0Download: http://www.mnogosearch.ru/download.html
 Source0:	http://www.mnogosearch.ru/Download/%{name}-%{version}.tar.gz
-# Source0-md5:	4849a49f00ea7da6f808cf404be49654
+# Source0-md5:	b72b5157e4aae232a70533ccc589ba14
 Source1:	%{name}-gethostnames
-Source2:	%{name}-Mysql-database
-Source3:	%{name}-stored.init
-Source4:	%{name}-dbgen
+Source2:	%{name}-dbgen
 Patch0:		%{name}-acfixes.patch
 URL:		http://www.mnogosearch.ru/
 BuildRequires:	autoconf
@@ -43,6 +41,7 @@ PreReq:		webserver
 Requires:	%{name}-lib = %{version}
 Obsoletes:	udmsearch
 Obsoletes:	aspseek
+Obsoletes:	%{name}-stored
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		_sysconfdir	/etc/%{name}
@@ -253,41 +252,19 @@ ln -sf %{_defaultdocdir}/%{name}-%{version}/html \
 mv -f $RPM_BUILD_ROOT%{_bindir}/*.cgi \
 	$RPM_BUILD_ROOT%{cgidir}
 
-(cd $RPM_BUILD_ROOT%{_sysconfdir}
-touch locals
-for f in *-dist ; do
-	mv -f $f `basename $f -dist`
-done
-)
-
 install %{SOURCE1} \
 	$RPM_BUILD_ROOT/etc/cron.daily/mnogosearch-gethostnames
 install -d $RPM_BUILD_ROOT/usr/src/example/mnogosearch
-install %{SOURCE2} $RPM_BUILD_ROOT/usr/src/example/mnogosearch/mysql.sql
-install %{SOURCE4} $RPM_BUILD_ROOT/etc/cron.daily/mnogosearch-dbgen
-
-install -d $RPM_BUILD_ROOT/etc/rc.d/init.d/
-install %{SOURCE3} $RPM_BUILD_ROOT/etc/rc.d/init.d/mnogosearch-stored
-
-cat > $RPM_BUILD_ROOT/usr/src/example/mnogosearch/pg-sql.sql <<EOF
-\connect template1
-CREATE DATABASE mnogosearch;
-\connect mnogosearch
-EOF
-cat create/pgsql/{create,crc-multi}.txt >> create/pgsql/mnogosearch-all.sql
-cat >> create/pgsql/mnogosearch-all.sql <<EOF
-CREATE USER "mnogosearch" WITH PASSWORD 'aqq123' NOCREATEDB NOCREATEUSER;
-GRANT ALL ON url,dict,robots,stopword,categories,next_url_id,affix TO mnogosearch;
-GRANT ALL ON ndict,server,thread,spell,next_cat_id,next_server_id,next_url_id TO mnogosearch;
-GRANT ALL ON ndict2,ndict3,ndict4,ndict5,ndict6,ndict7,ndict8,ndict9,
-ndict10,ndict11,ndict12,ndict16,ndict32 TO mnogosearch;
-GRANT ALL ON dict2,dict3,dict4,dict5,dict6,dict7,dict8,dict9,dict10,
-dict11,dict12,dict16,dict32 TO mnogosearch;
-GRANT ALL ON "qtrack" TO mnogosearch;
-EOF
+install %{SOURCE2} $RPM_BUILD_ROOT/etc/cron.daily/mnogosearch-dbgen
 
 mkdir html
-mv -f doc/*.{html,css} html
+cp -af doc/*.{html,css} html
+
+cd $RPM_BUILD_ROOT%{_sysconfdir}
+touch locals
+for f in *-dist ; do
+        mv -f $f `basename $f -dist`
+done
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -313,30 +290,16 @@ EOF
 #echo -n 'Dropping Database mnogosearch:'
 #su postgres -c "psql -U postgres template1 -c 'DROP DATABASE mnogosearch;' "
 
-%post stored
-/sbin/chkconfig --add mnogosearch-stored
-
-%preun stored
-if [ "$1" = "0" ]; then
-	if [ -f /var/lock/subsys/mnogosearch-stored ]; then
-		/etc/rc.d/init.d/mnogosearch-stored stop 1>&2
-	fi
-	/sbin/chkconfig --del mnogosearch-stored
-fi
-
 %files
 %defattr(644,root,root,755)
 %doc ChangeLog README TODO html doc/samples
 # instructions for database creation
-%doc create/db2 create/ibase create/msql create/mysql create/oracle create/pgsql create/sapdb create/solid create/sybase create/virtuoso
-%attr(755,root,root) %{_sbindir}/[!s]*
-%attr(755,root,root) %{_sbindir}/s[!t]*
+%doc create/db2 create/ibase create/mssql create/mysql create/oracle create/pgsql create/sapdb create/solid create/sybase create/virtuoso
+%attr(755,root,root) %{_sbindir}/*
+%attr(755,root,root) %{_bindir}/*
 %attr(755,root,root) %{cgidir}/*
 %{htmldir}/mnogodoc
 %dir %{_localstatedir}
-%{_localstatedir}/raw
-%{_localstatedir}/splitter
-%{_localstatedir}/tree
 %attr(775,root,http) %{_localstatedir}/cache
 %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/*.conf
 %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/*.freq
@@ -364,9 +327,3 @@ fi
 %files static
 %defattr(644,root,root,755)
 %{_libdir}/lib*.a
-
-%files stored
-%defattr(644,root,root,755)
-%attr(755,root,root) %{_sbindir}/stored
-%{_localstatedir}/store
-%attr(754,root,root)/etc/rc.d/init.d/mnogosearch-stored
