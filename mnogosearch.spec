@@ -284,16 +284,6 @@ EOF
 %post	lib -p /sbin/ldconfig
 %postun	lib -p /sbin/ldconfig
 
-# can be only in some script - %post/%postun must not mess with databases
-#%post pgsql
-#echo "Creating database mnogosearch..."
-#su postgres -c "psql -U postgres template1 < %{_docdir}/%{name}-%{version}/create/pgsql/mnogosearch-all.psql"
-#echo "Mnogosearch user was created with passwd aqq123 - change it!"
-#
-#%postun pgsql
-#echo -n 'Dropping Database mnogosearch:'
-#su postgres -c "psql -U postgres template1 -c 'DROP DATABASE mnogosearch;' "
-
 %files
 %defattr(644,root,root,755)
 %doc ChangeLog README TODO html doc/samples
