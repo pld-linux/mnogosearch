@@ -12,7 +12,7 @@
 %bcond_with	unixodbc	# with ODBC support through unixODBC
 #
 Summary:	Another one web indexing and searching system for a small domain or intranet
-Summary(pl):	Kolejny System indeksowania i przeszukiwania www dla ma³ych domen i intranetu
+Summary(pl):	Kolejny system indeksowania i przeszukiwania WWW dla ma³ych domen i intranetu
 Name:		mnogosearch
 Version:	3.2.19
 Release:	1
@@ -74,14 +74,14 @@ different web servers doesn't matter as long as they understand the
 HTTP 1.0 protocol. Mnogosearch supports also virtual domains.
 
 %description -l pl
-Mnogosearch jest kompletnym systemem indeksuj±cym i przeszukuj±cym www
+Mnogosearch jest kompletnym systemem indeksuj±cym i przeszukuj±cym WWW
 dla ma³ych domen oraz intranetu. System nie zosta³ opracowany jako
 wielki system typu Lycos, Infoseek WebCrawler i AltaVista. Natomiast
 nadaje siê do zastosowania w pojedynczej firmie, kampusie lub
-jakiejkolwiek stronie www. Zalety:
+jakiejkolwiek stronie WWW. Zalety:
  - przeszukiwaie tagów mp3,
  - niusów (Server news://localhost/pl/),
- - htdb czyli baz danych udostêpnianych przez www/cgi. (HTDBList SELECT
+ - htdb czyli baz danych udostêpnianych przez WWW/CGI. (HTDBList SELECT
    \ concat("http://search.mnogo.ru/board/message.php?id=",id) \ FROM
    udm.messages LIMIT 2))
  - zawarto¶ci serwerów ftp (rada za 2gr: "Index no" dla serwera ftp
@@ -100,7 +100,7 @@ jakiejkolwiek stronie www. Zalety:
    Przeczytaj cachemode.txt
 
 W odró¿nieniu od innych systemów bazuj±cych na WAIS-ie lub serwerach
-www, mnogosearch mo¿e ³±czyæ kilka serwerów www w jednym miejscu. Typ
+WWW, mnogosearch mo¿e ³±czyæ kilka serwerów WWW w jednym miejscu. Typ
 serwera nie ma znaczenia, dopóki pracuje on zgodnie z protoko³em HTTP
 1.0. Pakiet wspó³pracuje równie¿ z domenami wirtualnymi.
 
