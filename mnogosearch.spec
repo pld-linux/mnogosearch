@@ -7,7 +7,7 @@ Summary:	Another one web indexing and searching system for a small domain or int
 Summary(pl):	Kolejny System indeksowania i przeszukiwania www dla ma³ych domen i intranetu
 Name:		mnogosearch
 Version:	3.2.6
-Release:	2
+Release:	3
 License:	GPL
 Group:		Networking/Utilities
 Source0:	http://www.mnogosearch.ru/Download/%{name}-%{version}.tar.gz
@@ -28,6 +28,7 @@ Prereq:		webserver
 %{?_with_pgsql:Prereq:		postgresql-clients}
 Requires:	%{name}-lib = %{version}
 Obsoletes:	udmsearch
+Obsoletes:	aspseek
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		_sysconfdir	/etc/%{name}
