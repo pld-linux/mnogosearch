@@ -1,0 +1,8 @@
+#!/bin/sh
+# Daily update of Mnogosearch database 
+# 
+MNOGOCONF=/etc/mnogosearch/indexer.conf
+MNOGOOPT="-e -l"
+if [ -x /usr/sbin/indexer ]; then
+	/usr/sbin/indexer $MNOGOOPT $MNOGOCONF 1>&2 
+fi

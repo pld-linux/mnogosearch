@@ -6,7 +6,7 @@
 
 VHOSTS=/etc/httpd/mod_vhost_alias.conf
 HTTPCF=/etc/httpd/httpd.conf
-IDXRCF=/etc/httpd/mnogosearch/indexer.conf
+IDXRCF=/etc/mnogosearch/indexer.conf
 TMPFILE=/tmp/mnogo.tmp
 TMPFILE2=/tmp/mnogo2.tmp
 ENTRIES="index.html index.htm index.php index.php3 index.shtml default.htm"
@@ -14,8 +14,8 @@ ENTRIES="index.html index.htm index.php index.php3 index.shtml default.htm"
 rm -f $TMPFILE $TMPFILE2
 
 # First check for local sites in this file:
-for i in `cat /etc/httpd/mnogosearch/locals`; do 
-	echo $i >> $TMPFILE
+for i in `cat /etc/mnogosearch/locals`; do 
+	echo $i >> $TMPFILE 2&1>/dev/null
 done
 
 #Then extract from $VHOSTS file
@@ -29,7 +29,10 @@ SERVERNAME="`cat $HTTPCF| grep -v "#" |  grep ServerName| awk '{printf($2)}'`"
 #IF the two above fail use localhost
 [ -z "$SERVERNAME" ] && SERVERNAME="localhost"
 
-for i in `cat $TMPFILE` 'http://'$SERVERNAME; do echo "$i" >> $TMPFILE2; done
+if [ -f $TMPFILE ]; then
+	for i in `cat $TMPFILE`; do echo "$i" >> $TMPFILE2; done 
+fi
+echo 'http://'$SERVERNAME >> $TMPFILE2
 mv $TMPFILE2 $TMPFILE
 
 cat $IDXRCF | grep -v -e Server -e URL -e "#Added by"> $TMPFILE2 

@@ -5,6 +5,10 @@
 #
 # description: stored is a deamon which stores gziped version of parsed 
 # documents (html pages, news atricles etc..) 
+#
+# chkconfig:    345 86 14
+# description:  Stored is used to make documents excerpts for search results \
+#               and for storing compressed copies of indexed documents. 
 
 # Source function library
 . /etc/rc.d/init.d/functions
@@ -58,7 +62,6 @@ case "$1" in
 	msg_stopping Mnogosearch-stored 
 	killproc stored
 	rm -f /var/lock/subsys/mnogosearch-stored
-	;;
 	;;
   restart|reload)
   	$0 stop
