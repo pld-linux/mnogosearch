@@ -1,22 +1,20 @@
---- /home/users/hunter/backup/Makefile.am~	Fri Oct 19 17:07:07 2001
-+++ Makefile.am	Mon Apr 22 05:22:14 2002
-@@ -5,22 +5,22 @@
- 
+--- /home/users/hunter/backup/Makefile.am~	Wed May 15 13:36:46 2002
++++ Makefile.am	Sun Jun  2 17:25:17 2002
+@@ -5,21 +5,21 @@
  # copy dirs w/out Makefile.am into dist
  dist-hook:
--	mkdir $(distdir)/include
--	cp -r $(srcdir)/include/* $(distdir)/include/
-+	mkdir $(DESTDIR)$(distdir)/include
-+	cp -r $(srcdir)/include/* $(DESTDIR)$(distdir)/include/
+ #	mkdir $(distdir)/include
+-	cp -r $(srcdir)/include/ $(distdir)/include/
++	cp -r $(srcdir)/include/ $(DESTDIR)$(distdir)/include/
  	rm -f $(distdir)/include/udm_config.h $(distdir)/include/stamp.h 
 -	mkdir $(distdir)/create
--	cp -r $(srcdir)/create/* $(distdir)/create/
+-	cp -r $(srcdir)/create/ $(distdir)/
 -	mkdir $(distdir)/misc
--	cp -r $(srcdir)/misc/* $(distdir)/misc/
+-	cp -r $(srcdir)/misc/ $(distdir)/
 +	mkdir $(DESTDIR)$(distdir)/create
-+	cp -r $(srcdir)/create/* $(DESTDIR)$(distdir)/create/
++	cp -r $(srcdir)/create/ $(DESTDIR)$(distdir)/
 +	mkdir $(DESTDIR)$(distdir)/misc
-+	cp -r $(srcdir)/misc/* $(DESTDIR)$(distdir)/misc/
++	cp -r $(srcdir)/misc/ $(DESTDIR)$(distdir)/
  
  install-data-local:
 -	$(mkinstalldirs) $(localstatedir)
