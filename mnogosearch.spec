@@ -11,6 +11,7 @@ Release:	1
 License:	GPL v2+
 Group:		Networking/Utilities
 Source0:	http://www.mnogosearch.ru/Download/%{name}-%{version}.tar.gz
+# Source0-md5: b276b457d1db47a4387937507a79da97
 Source1:	%{name}-gethostnames
 Source2:	%{name}-Mysql-database
 Source3:	%{name}-stored.init
