@@ -145,7 +145,7 @@ informacji.
 Instalacja tego pakietu spowoduje za³o¿enie tabel w bazie mnogosearch.
 
 %package stored
-Summary:	Deamon for saving gziped versions of documents.
+Summary:	Deamon for saving gziped versions of documents
 Summary(pl):	Demon zapisuj±cy zgzipowane wersje dokumentów
 Group:		Development/Libraries
 Requires:	%{name} = %{version}
