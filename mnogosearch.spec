@@ -33,8 +33,8 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		_sysconfdir	/etc/%{name}
 %define		_localstatedir	/var/lib/mnogosearch
-%define		htmldir		/home/httpd/html
-%define		cgidir		/home/httpd/cgi-bin
+%define		htmldir		/home/services/httpd/html
+%define		cgidir		/home/services/httpd/cgi-bin
 
 %description
 The mnogosearch system is a complete world wide web indexing and
@@ -182,9 +182,9 @@ db="--with-built-in"
 %configure \
 	--enable-syslog      \
 	--enable-syslog=LOG_LOCAL6 \
-	--with-image-dir=/home/httpd/html/%{name} \
-	--with-cgi-bin-dir=/home/httpd/cgi-bin \
-	--with-search-dir=/home/httpd/html \
+	--with-image-dir=%{htmldir}/%{name} \
+	--with-cgi-bin-dir=%{cgidir} \
+	--with-search-dir=%{htmldir} \
 	--with-config-dir=%{_sysconfdir}/http/%{name} \
 	--with-openssl \
 	$db \
@@ -232,7 +232,7 @@ ln -sf %{_defaultdocdir}/%{name}-%{version}/html \
         $RPM_BUILD_ROOT%{htmldir}/mnogodoc
 
 mv -f $RPM_BUILD_ROOT%{_bindir}/*.cgi \
-	$RPM_BUILD_ROOT/home/httpd/cgi-bin
+	$RPM_BUILD_ROOT%{cgidir}
 
 (cd $RPM_BUILD_ROOT%{_sysconfdir}
 touch locals
