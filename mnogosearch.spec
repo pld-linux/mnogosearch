@@ -5,10 +5,6 @@ Version:	3.1.17
 Release:	2
 License:	GPL
 Group:		Networking/Utilities
-Group(de):	Netzwerkwesen/Werkzeuge
-Group(es):	Red/Utilitarios
-Group(pl):	Sieciowe/Narzêdzia
-Group(pt_BR):	Rede/Utilitários
 Source0:	http://www.mnogosearch.ru/Download/%{name}-%{version}.tar.gz
 Patch0:		%{name}-DESTDIR.patch
 Source1:	%{name}-gethostnames
@@ -83,13 +79,6 @@ serwera nie ma znaczenia, dopóki pracuje on zgodnie z protoko³em HTTP
 Summary:	Include files and libraries for mnogo
 Summary(pl):	Pliki nag³ówkowe dla mnogo
 Group:		Development/Libraries
-Group(de):	Entwicklung/Libraries
-Group(es):	Desarrollo/Bibliotecas
-Group(fr):	Development/Librairies
-Group(pl):	Programowanie/Biblioteki
-Group(pt_BR):	Desenvolvimento/Bibliotecas
-Group(ru):	òÁÚÒÁÂÏÔËÁ/âÉÂÌÉÏÔÅËÉ
-Group(uk):	òÏÚÒÏÂËÁ/â¦ÂÌ¦ÏÔÅËÉ
 Requires:	%{name} = %{version}
 
 %description devel
@@ -102,10 +91,6 @@ Pliki dla programistów mnogosearch.
 Summary:	mnogosearch with pgsql storage-support 
 Summary(pl):	mnogosearch z pgsqlem jako metod± przechowywania danych
 Group:		Networking/Utilities
-Group(de):	Netzwerkwesen/Werkzeuge
-Group(es):	Red/Utilitarios
-Group(pl):	Sieciowe/Narzêdzia
-Group(pt_BR):	Rede/Utilitários
 Requires:	%{name} = %{version}
 
 %description pgsql
@@ -123,13 +108,6 @@ Instalacja tego pakietu spowoduje za³o¿enie tabel w bazie mnogosearch.
 Summary:	mnogo static libraries
 Summary(pl):	Biblioteki statyczne mnogo
 Group:		Development/Libraries
-Group(de):	Entwicklung/Libraries
-Group(es):	Desarrollo/Bibliotecas
-Group(fr):	Development/Librairies
-Group(pl):	Programowanie/Biblioteki
-Group(pt_BR):	Desenvolvimento/Bibliotecas
-Group(ru):	òÁÚÒÁÂÏÔËÁ/âÉÂÌÉÏÔÅËÉ
-Group(uk):	òÏÚÒÏÂËÁ/â¦ÂÌ¦ÏÔÅËÉ
 Requires:	%{name}-devel = %{version}
 
 %description static
