@@ -199,9 +199,9 @@ install etc/search.htm-dist $RPM_BUILD_ROOT/home/httpd/html/search.html
 install -d $RPM_BUILD_ROOT/home/httpd/cgi-bin
 
 install $RPM_BUILD_ROOT%{_bindir}/search.cgi $RPM_BUILD_ROOT/home/httpd/cgi-bin/search.cgi
-touch $RPM_BUILD_ROOT%{_sysconfdir}/mnogosearch.hostnames
+touch $RPM_BUILD_ROOT%{_sysconfdir}/locals
 install %{SOURCE1} \
-	$RPM_BUILD_ROOT/etc/cron.daily/mnogo-addnewlocalhostnames
+	$RPM_BUILD_ROOT/etc/cron.daily/mnogosearch-gethostnames
 
 gzip -z9 create/*
 
@@ -224,13 +224,16 @@ echo "Trying to Create Tables:"
 su postgres -c "psql -U postgres mnogosearch < /usr/share/doc/mnogosearch-3.1.17/pgsql/create.txt"
 echo "Trying to Create Tables for crc-multi storage method:"
 su postgres -c "psql -U postgres mnogosearch < /usr/share/doc/mnogosearch-3.1.17/pgsql/crc-multi.txt"
+echo "Trying to Create Tables for news extension:"
+su postgres -c "psql -U postgres mnogosearch < /usr/share/doc/mnogosearch-3.1.17/pgsql/news-extension.txt"
 echo "Mnogosearch user will be created with passwd aqq123 change it ! and I mean it realy !"
-su postgres -c "psql -U postgres template1 -c 'CREATE USER "mnogosearch" WITH PASSWORD 'aqq123' NOCREATEDB NOCREATEUSER; ' "
+echo 'CREATE USER "mnogosearch" WITH PASSWORD '"'aqq123'"' NOCREATEDB NOCREATEUSER;' > /tmp/aqq
+su postgres -c "psql -U postgres mnogosearch < /tmp/aqq"
 echo "Granting Permisions..."
 cat > /tmp/mnogo.aqq << EOF
-GRANT ALL ON url,dict,robots,stopword,categories TO mnogosearch;
+GRANT ALL ON url,dict,robots,stopword,categories,next_url_id,affix TO mnogosearch;
 
-GRANT ALL ON ndict TO mnogosearch;
+GRANT ALL ON ndict,server,thread,spell,next_cat_id,next_server_id,next_url_id TO mnogosearch;
 
 GRANT ALL ON ndict2,ndict3,ndict4,ndict5,ndict6,ndict7,ndict8,ndict9,
 ndict10,ndict11,ndict12,ndict16,ndict32 TO mnogosearch;
