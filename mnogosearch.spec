@@ -9,6 +9,7 @@ Group(de):	Netzwerkwesen/Werkzeuge
 Group(pl):	Sieciowe/Narzêdzia
 Source0:	http://www.mnogosearch.ru/Download/%{name}-%{version}.tar.gz
 Patch0:		%{name}-DESTDIR.patch
+Source1:	%{name}-gethostnames
 URL:		http://www.mnogosearch.ru/
 BuildRequires:	postgresql-devel
 PreReq:		webserver
@@ -46,18 +47,23 @@ wielki system typu Lycos, Infoseek WebCrawler i AltaVista. Natomiast
 nadeje siê do zastosowania w pojedyñczej firmie, kampusie lub
 jakiejkolwiek stronie www.
 Zalety:
- - przeszukiwaie tagow mp3
- - wyszykiwanie w URLach http (i ftp: - przez proxy)
+ - przeszukiwaie tagow mp3,
+ - niusów (Server news://localhost/pl/),
+ - htdb czyli baz danych udostêpnianych przez www/cgi. (HTDBList SELECT concat("http://search.mnogo.ru/board/message.php?id=",id) \ FROM udm.messages LIMIT 2)) 
+ - zawarto¶ci serwerów ftp (rada za 2gr "Index  no" dla serwera ftp spowoduje nie indexowanie *zawarto¶ci* plików na nim siê znajduj±cych)
+ - wyszykiwanie w zwyk³ych URLach http:// 
+ - wsparcie dla ssl (https://)
+ - wyszukiwanie w mirrorach [równie¿ lokalnych] odleg³ych sieci
  - zgadywanie zestawu znakow
  - zewnetrzne przetwarzacze dokumentow na potrzeby indekosowania
- - wsparcie dla ssl (https://)
  - ograniczanie zapytañ do jednej nazwy hosta:  <INPUT TYPE=HIDDEN NAME=ul VALUE=http://www.something.com/>
+ - kategoryzacja witryny (doc/categories.txt)
  - mo¿liwe jest uruchomienie kilku procesów indeksuj±cych na kilku (teoretycznie 128) hostach i trzymanie bazy na jednym z nich, reindeksacja nie powoduje wtedy niedostêpno¶ci wyszukiwarki. Przeczytaj cachemode.txt
 
-W odró¿nieniu do innych bazuj±cych na WAIS-sie lub serwerch www
-systemach, mnogosearch mo¿e ³±czyæ kilka serwerów www w jednym
-miejscu. Typ serwera nie ma znaczenia, dopóki pracuje on zgodnie z
-protoko³em HTTP 1.0. Pakiet wspó³pracuje równie¿ z domenami wirtualnymi
+W odró¿nieniu od innych systemów bazuj±cych na WAIS-sie lub serwerch www,
+mnogosearch mo¿e ³±czyæ kilka serwerów www w jednym miejscu. Typ serwera 
+nie ma znaczenia, dopóki pracuje on zgodnie z protoko³em HTTP 1.0. Pakiet
+wspó³pracuje równie¿ z domenami wirtualnymi.
 
 %package devel
 Summary:	Include files and libraries for mnogo
@@ -146,6 +152,7 @@ mv aqq  configure.in
 	--with-cgi-bin-dir=/home/httpd/cgi-bin \
 	--with-search-dir=/home/httpd/html \
 	--with-config-dir=%{_sysconfdir}/http/%{name} \
+	--infodir=%{_infodir} \
 	--with-pgsql \
 	--with-openssl \
 	--enable-linux-pthreads \
@@ -178,8 +185,7 @@ mv aqq  configure.in
 %{__make}
 
 %install
-install -d $RPM_BUILD_ROOT{/var/lib/mnogosearch,/etc/cron.daily} \
-	$RPM_BUILD_ROOT/home/httpd/html/%{name} $RPM_BUILD_ROOT%{_sysconfdir}
+install -d $RPM_BUILD_ROOT{/var/lib/mnogosearch,/etc/cron.daily,/home/httpd/html/%{name},%{_sysconfdir},%{_infodir}}
 
 %{__make} DESTDIR=$RPM_BUILD_ROOT install
 
@@ -194,7 +200,7 @@ install -d $RPM_BUILD_ROOT/home/httpd/cgi-bin
 
 install $RPM_BUILD_ROOT%{_bindir}/search.cgi $RPM_BUILD_ROOT/home/httpd/cgi-bin/search.cgi
 touch $RPM_BUILD_ROOT%{_sysconfdir}/mnogosearch.hostnames
-install mnogo-addnewlocalhostnames \
+install %{SOURCE1} \
 	$RPM_BUILD_ROOT/etc/cron.daily/mnogo-addnewlocalhostnames
 
 gzip -z9 create/*
@@ -207,14 +213,40 @@ cp %{_sysconfdir}/indexer.conf-dist %{_sysconfdir}/indexer.conf
 
 
 cat << EOF
-Please see docs (%{_defaultdocdir}/%{name} or http://localhost/mnogodoc), then read how to setup db connection,
-and put line like this "pgsql://user:password@/dbname/" into %{_sysconfdir}, then run sth like psql < %{_defaultdocdir}/%{name}/pgsql/*.txt
-
+Please see docs (%{_defaultdocdir}/%{name} or http://localhost/mnogodoc), 
+then read how to setup db connection, and put line like this 
+"pgsql://user:password@/dbname/" into %{_sysconfdir}, then run sth like 
+psql < %{_defaultdocdir}/%{name}/pgsql/*.txt
+Now I will try to Create Tables for postgres: 
 EOF
+su postgres -c "psql -U postgres template1 -c 'CREATE DATABASE mnogosearch;' "
+echo "Trying to Create Tables:"
+su postgres -c "psql -U postgres mnogosearch < /usr/share/doc/mnogosearch-3.1.17/pgsql/create.txt"
+echo "Trying to Create Tables for crc-multi storage method:"
+su postgres -c "psql -U postgres mnogosearch < /usr/share/doc/mnogosearch-3.1.17/pgsql/crc-multi.txt"
+echo "Mnogosearch user will be created with passwd aqq123 change it ! and I mean it realy !"
+su postgres -c "psql -U postgres template1 -c 'CREATE USER "mnogosearch" WITH PASSWORD 'aqq123' NOCREATEDB NOCREATEUSER; ' "
+echo "Granting Permisions..."
+cat > /tmp/mnogo.aqq << EOF
+GRANT ALL ON url,dict,robots,stopword,categories TO mnogosearch;
+
+GRANT ALL ON ndict TO mnogosearch;
+
+GRANT ALL ON ndict2,ndict3,ndict4,ndict5,ndict6,ndict7,ndict8,ndict9,
+ndict10,ndict11,ndict12,ndict16,ndict32 TO mnogosearch;
+
+GRANT ALL ON dict2,dict3,dict4,dict5,dict6,dict7,dict8,dict9,dict10,
+dict11,dict12,dict16,dict32 TO mnogosearch;
+
+GRANT ALL ON "qtrack" TO mnogosearch;
+EOF
+su postgres -c "psql -U postgres template1 -f /tmp/mnogo.aqq"
+rm -f /tmp/mnogo.aqq
 
 %files
 %defattr(644,root,root,755)
-%doc COPYING README doc/* create/*
+%doc COPYING README doc/* create/* create/*/*
+#%doc %{_infodir}/*
 %dir /var/lib/%{name}
 %attr (755,http,http) /home/httpd/cgi-bin/*
 %attr (755,http,http) %{_bindir}/*
@@ -227,10 +259,10 @@ EOF
 %config(noreplace) %{_sysconfdir}/*
 %config(noreplace) %attr(750,http,http) /etc/cron.daily/*
 
-#%files devel
-#%defattr(644,root,root,755)
+%files devel
+%defattr(644,root,root,755)
 #%{_includedir}/%{name}/*
 
-#%files static
-#%defattr(644,root,root,755)
+%files static
+%defattr(644,root,root,755)
 #%{_libdir}/%{name}/*.a
