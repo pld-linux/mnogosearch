@@ -99,6 +99,9 @@ Requires(post):	/sbin/ldconfig
 %description lib
 This package contains mnogosearch library files.
 
+%description lib -l pl
+Ten pakiet zawiera pliki biblioteki mnogosearch.
+
 %package devel
 Summary:	Include files for mnogosearch
 Summary(pl):	Pliki nag³ówkowe mnogosearch
@@ -139,7 +142,6 @@ Ten pakiet zawiera obs³ugê baz PostgreSQL do przechowywania
 informacji.
 
 Instalacja tego pakietu spowoduje za³o¿enie tabel w bazie mnogosearch.
-
 
 %package stored
 Summary:	Deamon for saving gziped versions of documents.
