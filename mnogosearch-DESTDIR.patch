@@ -1,7 +1,22 @@
---- mnogosearch-3.1.16/Makefile.am~	Tue May 15 16:51:19 2001
-+++ mnogosearch-3.1.16/Makefile.am	Thu Jun 28 13:36:13 2001
-@@ -14,12 +14,11 @@
- 	cp -r $(srcdir)/misc/* $(distdir)/misc/
+--- /home/users/hunter/backup/Makefile.am~	Fri Oct 19 17:07:07 2001
++++ Makefile.am	Mon Apr 22 05:22:14 2002
+@@ -5,22 +5,22 @@
+ 
+ # copy dirs w/out Makefile.am into dist
+ dist-hook:
+-	mkdir $(distdir)/include
+-	cp -r $(srcdir)/include/* $(distdir)/include/
++	mkdir $(DESTDIR)$(distdir)/include
++	cp -r $(srcdir)/include/* $(DESTDIR)$(distdir)/include/
+ 	rm -f $(distdir)/include/udm_config.h $(distdir)/include/stamp.h 
+-	mkdir $(distdir)/create
+-	cp -r $(srcdir)/create/* $(distdir)/create/
+-	mkdir $(distdir)/misc
+-	cp -r $(srcdir)/misc/* $(distdir)/misc/
++	mkdir $(DESTDIR)$(distdir)/create
++	cp -r $(srcdir)/create/* $(DESTDIR)$(distdir)/create/
++	mkdir $(DESTDIR)$(distdir)/misc
++	cp -r $(srcdir)/misc/* $(DESTDIR)$(distdir)/misc/
  
  install-data-local:
 -	$(mkinstalldirs) $(localstatedir)
@@ -9,12 +24,15 @@
 -	$(mkinstalldirs) $(localstatedir)/splitter/
 -	$(mkinstalldirs) $(localstatedir)/tree/
 -	$(mkinstalldirs) $(localstatedir)/cache/
+-	$(mkinstalldirs) $(localstatedir)/store/
 -	chmod 777 $(localstatedir)/cache/
 +	$(mkinstalldirs) $(DESTDIR)$(localstatedir)
 +	$(mkinstalldirs) $(DESTDIR)$(localstatedir)/raw/
 +	$(mkinstalldirs) $(DESTDIR)$(localstatedir)/splitter/
 +	$(mkinstalldirs) $(DESTDIR)$(localstatedir)/tree/
 +	$(mkinstalldirs) $(DESTDIR)$(localstatedir)/cache/
++	$(mkinstalldirs) $(DESTDIR)$(localstatedir)/store/
++	chmod 777 $(DESTDIR)$(localstatedir)/cache/
  
- EXTRA_DIST = net.m4 install.pl
- 
+ uninstall-local:
+ 	-rmdir $(localstatedir)/raw/
