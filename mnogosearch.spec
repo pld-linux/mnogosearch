@@ -1,35 +1,36 @@
-# conditional build:
-# _pgsql support for postgres
-# _mysql support for mysql
-
-Summary:	A another one web indexing and searching system for a small domain or intranet
+#
+# Conditional build:
+# _with_pgsql	support for postgres
+# _with_mysql	support for mysql
+#
+Summary:	Another one web indexing and searching system for a small domain or intranet
 Summary(pl):	Kolejny System indeksowania i przeszukiwania www dla ma³ych domen i intranetu
 Name:		mnogosearch
 Version:	3.2.3
 Release:	1
 License:	GPL
 Group:		Networking/Utilities
-Group(de):	Netzwerkwesen/Werkzeuge
-Group(es):	Red/Utilitarios
-Group(pl):	Sieciowe/Narzêdzia
-Group(pt_BR):	Rede/Utilitários
 Source0:	http://www.mnogosearch.ru/Download/%{name}-%{version}.tar.gz
-Source2:	%{name}-gethostnames
-%{?_mysql:Source1:		%{name}-Mysql-database}
+Source1:	%{name}-gethostnames
+Source2:	%{name}-Mysql-database
 Patch0:		%{name}-DESTDIR.patch
-%{?_mysql:Patch1:		%{name}-Mysql-pld.patch}
+Patch1:		%{name}-Mysql-pld.patch
 URL:		http://www.mnogosearch.ru/
-%{?_pgsql:BuildRequires:	postgresql-devel}
-%{?_mysql:BuildRequires:	mysql-devel}
 BuildRequires:	autoconf
 BuildRequires:	automake
 BuildRequires:	libtool
+%{?_with_mysql:BuildRequires:	mysql-devel}
+BuildRequires:	openssl-devel
+%{?_with_pgsql:BuildRequires:	postgresql-devel}
 Prereq:		webserver
-%{?_pgsql:Prereq:		postgresql-clients}
+%{?_with_pgsql:Prereq:		postgresql-clients}
+Requires(post):	/sbin/ldconfig
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		_sysconfdir	/etc/httpd/%{name}
 %define		_localstatedir	/var/lib/mnogosearch
+%define		htmldir		/home/httpd/html/%{name}
+%define		cgidir		/home/httpd/cgi-bin
 
 %description
 The mnogosearch system is a complete world wide web indexing and
@@ -87,59 +88,21 @@ serwera nie ma znaczenia, dopóki pracuje on zgodnie z protoko³em HTTP
 1.0. Pakiet wspó³pracuje równie¿ z domenami wirtualnymi.
 
 %package devel
-Summary:	Include files and libraries for mnogo
-Summary(pl):	Pliki nag³ówkowe dla mnogo
+Summary:	Include files for mnogosearch
+Summary(pl):	Pliki nag³ówkowe mnogosearch
 Group:		Development/Libraries
-Group(de):	Entwicklung/Libraries
-Group(es):	Desarrollo/Bibliotecas
-Group(fr):	Development/Librairies
-Group(pl):	Programowanie/Biblioteki
-Group(pt_BR):	Desenvolvimento/Bibliotecas
-Group(ru):	òÁÚÒÁÂÏÔËÁ/âÉÂÌÉÏÔÅËÉ
-Group(uk):	òÏÚÒÏÂËÁ/â¦ÂÌ¦ÏÔÅËÉ
 Requires:	%{name} = %{version}
 
 %description devel
 This package contains mnogosearch development files.
 
 %description devel -l pl
-Pliki dla programistów mnogosearch.
-
-%if%{?_pgsql:1}%{!?_pgsql:0}
-
-%package pgsql
-Summary:	mnogosearch with pgsql storage-support 
-Summary(pl):	mnogosearch z pgsqlem jako metod± przechowywania danych
-Group:		Networking/Utilities
-Group(de):	Netzwerkwesen/Werkzeuge
-Group(es):	Red/Utilitarios
-Group(pl):	Sieciowe/Narzêdzia
-Group(pt_BR):	Rede/Utilitários
-Requires:	%{name} = %{version}
-
-%description pgsql
-This package contains pgsql storage support.
-
-Note: install will try to create tables in database mnogosearch.
-
-%description pgsql -l pl
-Ten pakiet zawiera wsparcie dla postgresa jako sposobu przechowywania
-informacji. 
-
-Instalacja tego pakietu spowoduje za³o¿enie tabel w bazie mnogosearch.
-%endif
+Pliki dla programistów u¿ywaj±cych mnogosearch.
 
 %package static
-Summary:	mnogo static libraries
-Summary(pl):	Biblioteki statyczne mnogo
+Summary:	mnogosearch static libraries
+Summary(pl):	Biblioteki statyczne mnogosearch
 Group:		Development/Libraries
-Group(de):	Entwicklung/Libraries
-Group(es):	Desarrollo/Bibliotecas
-Group(fr):	Development/Librairies
-Group(pl):	Programowanie/Biblioteki
-Group(pt_BR):	Desenvolvimento/Bibliotecas
-Group(ru):	òÁÚÒÁÂÏÔËÁ/âÉÂÌÉÏÔÅËÉ
-Group(uk):	òÏÚÒÏÂËÁ/â¦ÂÌ¦ÏÔÅËÉ
 Requires:	%{name}-devel = %{version}
 
 %description static
@@ -147,6 +110,23 @@ This package contains static libraries of mnogosearch.
 
 %description static -l pl
 Ten pakiet zawiera statyczne biblioteki mnogosearch.
+
+%package pgsql
+Summary:	pgsql storage-support for mnogosearch
+Summary(pl):	Obs³uga przechowywania danych w bazie PostgreSQL
+Group:		Networking/Utilities
+Requires:	%{name} = %{version}
+
+%description pgsql
+This package contains PostgreSQL storage support.
+
+Note: install will try to create tables in database mnogosearch.
+
+%description pgsql -l pl
+Ten pakiet zawiera obs³ugê baz PostgreSQL do przechowywania
+informacji.
+
+Instalacja tego pakietu spowoduje za³o¿enie tabel w bazie mnogosearch.
 
 %prep
 %setup -q
@@ -161,8 +141,8 @@ automake -a -c
 
 db="--with-built-in"
 
-%{?_mysql: db="--with-mysql"}
-%{?_pgsql: db="--with-pgsql"}
+%{?_with_mysql: db="--with-mysql"}
+%{?_with_pgsql: db="--with-pgsql"}
 
 %configure \
 	--enable-syslog      \
@@ -171,7 +151,6 @@ db="--with-built-in"
 	--with-cgi-bin-dir=/home/httpd/cgi-bin \
 	--with-search-dir=/home/httpd/html \
 	--with-config-dir=%{_sysconfdir}/http/%{name} \
-	--infodir=%{_infodir} \
 	--with-openssl \
 	$db \
 	--enable-linux-pthreads \
@@ -180,10 +159,10 @@ db="--with-built-in"
 	--enable-fast-tag \
 	--enable-fast-cat \
 	--enable-fast-site \
-	--enable-phrase    \
+	--enable-phrase \
+	--enable-shared
 
 %{__make}
-
 
 #  enable automatic Russian charset guesser :-]
 # wy uze www.linux.ru procitacli sewodnja?
@@ -201,102 +180,111 @@ db="--with-built-in"
 #	
 # FIXME: add selection of storage method, spliting into %{name}-common & %{name}-$DB_NAME
 
-
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT{/var/lib/mnogosearch,/etc/cron.daily,/home/httpd/html/%{name},%{_sysconfdir},%{_infodir}}
+install -d $RPM_BUILD_ROOT{%{_localstatedir},%{htmldir},%{cgidir},%{_sysconfdir}} \
+	$RPM_BUILD_ROOT{/etc/cron.daily,%{_infodir}}
 
-%{__make} DESTDIR=$RPM_BUILD_ROOT install
+%{__make} install \
+	DESTDIR=$RPM_BUILD_ROOT
 
-ln -sf ../..%{_sbindir}/indexer \
+ln -sf %{_sbindir}/indexer \
 	$RPM_BUILD_ROOT/etc/cron.daily/mnogo-dbgen
 
-ln -sf ../../../..%{_defaultdocdir}/%{name} \
-        $RPM_BUILD_ROOT/home/httpd/html/%{name}/mnogodoc
+ln -sf %{_defaultdocdir}/%{name}-%{version}/html \
+        $RPM_BUILD_ROOT%{htmldir}/mnogodoc
 
-install etc/search.htm-dist $RPM_BUILD_ROOT/home/httpd/html/search.html
-install -d $RPM_BUILD_ROOT/home/httpd/cgi-bin
+install etc/search.htm-dist $RPM_BUILD_ROOT%{htmldir}/search.html
 
-install $RPM_BUILD_ROOT%{_bindir}/search.cgi $RPM_BUILD_ROOT/home/httpd/cgi-bin/search.cgi
-touch $RPM_BUILD_ROOT%{_sysconfdir}/locals
+mv -f $RPM_BUILD_ROOT%{_bindir}/*.cgi \
+	$RPM_BUILD_ROOT/home/httpd/cgi-bin
+
+(cd $RPM_BUILD_ROOT%{_sysconfdir}
+touch locals
+for f in *-dist ; do
+	mv -f $f `basename $f -dist`
+done
+)
+
 install %{SOURCE1} \
 	$RPM_BUILD_ROOT/etc/cron.daily/mnogosearch-gethostnames
-install %{SOURCE2} create/
 
-gzip -z9 create/*
-gzip -z9 create/*/*
+install %{SOURCE2} create/mysql/mnogosearch-all.sql
+
+cat > create/pgsql/mnogosearch-all.sql <<EOF
+\connect template1
+CREATE DATABASE mnogosearch;
+\connect mnogosearch
+EOF
+cat create/pgsql/{create,crc-multi,news-extension}.txt \
+	>> create/pgsql/mnogosearch-all.sql
+cat >> create/pgsql/mnogosearch-all.sql <<EOF
+CREATE USER "mnogosearch" WITH PASSWORD 'aqq123' NOCREATEDB NOCREATEUSER;
+GRANT ALL ON url,dict,robots,stopword,categories,next_url_id,affix TO mnogosearch;
+GRANT ALL ON ndict,server,thread,spell,next_cat_id,next_server_id,next_url_id TO mnogosearch;
+GRANT ALL ON ndict2,ndict3,ndict4,ndict5,ndict6,ndict7,ndict8,ndict9,
+ndict10,ndict11,ndict12,ndict16,ndict32 TO mnogosearch;
+GRANT ALL ON dict2,dict3,dict4,dict5,dict6,dict7,dict8,dict9,dict10,
+dict11,dict12,dict16,dict32 TO mnogosearch;
+GRANT ALL ON "qtrack" TO mnogosearch;
+EOF
+
+gzip -9nf ChangeLog README TODO
+mkdir html
+mv -f doc/*.html html
+rm -rf doc/samples/CVS create/CVS create/*/CVS
 
 %clean
 rm -rf $RPM_BUILD_ROOT
 
 %post
-cp -f %{_sysconfdir}/indexer.conf-dist %{_sysconfdir}/indexer.conf
-
+/sbin/ldconfig
 cat << EOF
-Please see docs (%{_defaultdocdir}/%{name} or http://localhost/mnogodoc), 
-then read how to setup db connection, and put line like this 
-"pgsql://user:password@/dbname/" into %{_sysconfdir}, then run sth like 
-psql < %{_defaultdocdir}/%{name}/pgsql/*.txt
+Please see docs (%{_defaultdocdir}/%{name}-%{version} or http://localhost/mnogodoc),
+then read how to setup db connection, and put line like this
+"pgsql://user:password@/dbname/" into %{_sysconfdir}, then setup database
+by something like "psql < %{_defaultdocdir}/%{name}-%{version}/create/pgsql/*.txt"
 EOF
 
-
-%if%{?_pgsql:1}%{!?_pgsql:0}
+%postun	-p /sbin/ldconfig
 
 %post pgsql
-echo 'Now I will try to Create Tables for postgres: '
-su postgres -c "psql -U postgres template1 -c 'CREATE DATABASE mnogosearch;' "
-echo "Trying to Create Tables:"
-su postgres -c "psql -U postgres mnogosearch < /usr/share/doc/mnogosearch-3.1.17/pgsql/create.txt"
-echo "Trying to Create Tables for crc-multi storage method:"
-su postgres -c "psql -U postgres mnogosearch < /usr/share/doc/mnogosearch-3.1.17/pgsql/crc-multi.txt"
-echo "Trying to Create Tables for news extension:"
-su postgres -c "psql -U postgres mnogosearch < /usr/share/doc/mnogosearch-3.1.17/pgsql/news-extension.txt"
-echo "Mnogosearch user will be created with passwd aqq123 change it ! and I mean it really !"
-echo 'CREATE USER "mnogosearch" WITH PASSWORD '"'aqq123'"' NOCREATEDB NOCREATEUSER;' > /tmp/aqq
-su postgres -c "psql -U postgres mnogosearch < /tmp/aqq"
-echo "Granting Permisions..."
-cat > /tmp/mnogo.aqq << EOF
-
-GRANT ALL ON url,dict,robots,stopword,categories,next_url_id,affix TO mnogosearch;
-
-GRANT ALL ON ndict,server,thread,spell,next_cat_id,next_server_id,next_url_id TO mnogosearch;
-
-GRANT ALL ON ndict2,ndict3,ndict4,ndict5,ndict6,ndict7,ndict8,ndict9,
-ndict10,ndict11,ndict12,ndict16,ndict32 TO mnogosearch;
-
-GRANT ALL ON dict2,dict3,dict4,dict5,dict6,dict7,dict8,dict9,dict10,
-dict11,dict12,dict16,dict32 TO mnogosearch;
-
-GRANT ALL ON "qtrack" TO mnogosearch;
-EOF
-su postgres -c "psql -U postgres template1 -f /tmp/mnogo.aqq"
-rm -f /tmp/mnogo.aqq
+echo "Creating database mnogosearch..."
+su postgres -c "psql -U postgres template1 < %{_docdir}/%{name}-%{version}/create/pgsql/mnogosearch-all.psql"
+echo "Mnogosearch user was created with passwd aqq123 - change it!"
 
 %postun pgsql
 echo -n 'Dropping Database mnogosearch:' 
 su postgres -c "psql -U postgres template1 -c 'DROP DATABASE mnogosearch;' "
-%endif # _pgsql
-	
+
 %files
 %defattr(644,root,root,755)
-%doc COPYING README doc/* create/* create/*/*
-#%doc %{_infodir}/*
-%dir /var/lib/%{name}
-%attr (755,http,http) /home/httpd/cgi-bin/*
-%attr (755,http,http) %{_bindir}/*
-%attr (755,http,http) %{_sbindir}/*
-%attr (755,http,http) %{_libdir}/*
-#%attr (755,http,http) %{_libdir}/%{name}/*la
-%config(noreplace) /home/httpd/html/%{name}/*
-#%{_datadir}/%{name}/*
-%config(noreplace) %verify(not size mtime md5) /home/httpd/html/search.html
-%config(noreplace) %{_sysconfdir}/*
-%config(noreplace) %attr(750,http,http) /etc/cron.daily/*
+%doc *.gz html doc/samples create
+%attr(755,root,root) %{_libdir}/lib*-*.so
+%attr(755,root,root) %{_sbindir}/*
+%attr(755,root,root) %{cgidir}/*
+%config(noreplace) %verify(not size mtime md5) %{htmldir}/*.html
+%{htmldir}/mnogodoc
+%dir %{_localstatedir}
+%{_localstatedir}/[rst]*
+%attr(775,root,http) %{_localstatedir}/cache
+%config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/*.conf
+%config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/*.htm
+%config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/locals
+%dir %{_sysconfdir}/langmap
+%dir %{_sysconfdir}/stopwords
+%dir %{_sysconfdir}/synonym
+%config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/*/*
+%config(noreplace) %attr(750,root,root) /etc/cron.daily/*
+%{_mandir}/man?/*
 
 %files devel
 %defattr(644,root,root,755)
+%attr (755,root,root) %{_bindir}/udm-config
 %{_includedir}/*
+%attr (755,root,root) %{_libdir}/libudmsearch.so
+%attr (755,root,root) %{_libdir}/lib*.la
 
 %files static
 %defattr(644,root,root,755)
-#%{_libdir}/%{name}/*.a
+%{_libdir}/lib*.a
