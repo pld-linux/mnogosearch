@@ -6,15 +6,17 @@
 Summary:	Another one web indexing and searching system for a small domain or intranet
 Summary(pl):	Kolejny System indeksowania i przeszukiwania www dla ma³ych domen i intranetu
 Name:		mnogosearch
-Version:	3.2.3
-Release:	2
+Version:	3.2.5
+Release:	1
 License:	GPL
 Group:		Networking/Utilities
 Source0:	http://www.mnogosearch.ru/Download/%{name}-%{version}.tar.gz
 Source1:	%{name}-gethostnames
 Source2:	%{name}-Mysql-database
+Source3:	%{name}-stored.init
 Patch0:		%{name}-DESTDIR.patch
 Patch1:		%{name}-Mysql-pld.patch
+Patch2:		%{name}-stored-dirs_1.patch
 URL:		http://www.mnogosearch.ru/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -46,8 +48,8 @@ particular sub section of a web site. Features:
  - charset guesser
  - externel parsers
  - support for ssl (https://)
- - limiting queries to one hostname by sth like this:
-   <INPUT TYPE=HIDDEN NAME=ul VALUE=http://www.something.com/>
+ - limiting queries to one hostname by sth like this: <INPUT
+   TYPE=HIDDEN NAME=ul VALUE=http://www.something.com/>
  - it's posilble to run indexers on several diffrent (theoreticaly 128)
    hosts, and gather information on one of them, reindexing proceses make
    no harm to avalibility of search engine. See cachemode.txt
@@ -65,18 +67,18 @@ nadaje siê do zastosowania w pojedynczej firmie, kampusie lub
 jakiejkolwiek stronie www. Zalety:
  - przeszukiwaie tagów mp3,
  - niusów (Server news://localhost/pl/),
- - htdb czyli baz danych udostêpnianych przez www/cgi. (HTDBList SELECT \
-   concat("http://search.mnogo.ru/board/message.php?id=",id) \ 
-   FROM udm.messages LIMIT 2))
+ - htdb czyli baz danych udostêpnianych przez www/cgi. (HTDBList SELECT
+   \ concat("http://search.mnogo.ru/board/message.php?id=",id) \ FROM
+   udm.messages LIMIT 2))
  - zawarto¶ci serwerów ftp (rada za 2gr: "Index no" dla serwera ftp
    spowoduje nie indexowanie *zawarto¶ci* plików na nim siê znajduj±cych)
- - wyszukiwanie w zwyk³ych URL-ach http:// 
+ - wyszukiwanie w zwyk³ych URL-ach http://
  - wsparcie dla SSL (https://)
  - wyszukiwanie w mirrorach (równie¿ lokalnych) odleg³ych sieci
  - zgadywanie zestawu znaków
  - zewnêtrzne przetwarzacze dokumentów na potrzeby indeksowania
- - ograniczanie zapytañ do jednej nazwy hosta:
-   <INPUT TYPE=HIDDEN NAME=ul VALUE=http://www.something.com/>
+ - ograniczanie zapytañ do jednej nazwy hosta: <INPUT TYPE=HIDDEN
+   NAME=ul VALUE=http://www.something.com/>
  - kategoryzacja witryny (doc/categories.txt)
  - mo¿liwe jest uruchomienie kilku procesów indeksuj±cych na kilku
    (teoretycznie 128) hostach i trzymanie bazy na jednym z nich,
@@ -92,6 +94,22 @@ serwera nie ma znaczenia, dopóki pracuje on zgodnie z protoko³em HTTP
 Summary:	Include files for mnogosearch
 Summary(pl):	Pliki nag³ówkowe mnogosearch
 Group:		Development/Libraries
+Group(cs):	Vývojové prostøedky/Knihovny
+Group(da):	Udvikling/Biblioteker
+Group(de):	Entwicklung/Bibliotheken
+Group(es):	Desarrollo/Bibliotecas
+Group(fr):	Development/Librairies
+Group(is):	Þróunartól/Aðgerðasöfn
+Group(it):	Sviluppo/Librerie
+Group(ja):	³«È¯/¥é¥¤¥Ö¥é¥ê
+Group(no):	Utvikling/Bibliotek
+Group(pl):	Programowanie/Biblioteki
+Group(pt):	Desenvolvimento/Bibliotecas
+Group(pt_BR):	Desenvolvimento/Bibliotecas
+Group(ru):	òÁÚÒÁÂÏÔËÁ/âÉÂÌÉÏÔÅËÉ
+Group(sl):	Razvoj/Knji¾nice
+Group(sv):	Utveckling/Bibliotek
+Group(uk):	òÏÚÒÏÂËÁ/â¦ÂÌ¦ÏÔÅËÉ
 Requires:	%{name} = %{version}
 
 %description devel
@@ -129,10 +147,28 @@ informacji.
 
 Instalacja tego pakietu spowoduje za³o¿enie tabel w bazie mnogosearch.
 
+
+%package stored
+Summary:	Deamon for saving gziped versions of documents.
+Summary(pl):	Demon zapisuj±cy zgzipowane wersje dokumentów
+Group:		Development/Libraries
+Requires:	%{name} = %{version}
+
+%description stored
+This package contains optional part of mnogosearch stored daemon,
+which stores locally gziped versions of parsed (& indexed) html files,
+news articles, etc.
+
+%description stored -l pl
+Pakiet zawiera opcjonaln± czê¶æ mnogosearch demon stored, zajmuj±cy
+siê lokalnym przechowywaniem przetworzonych (i zindeksowanych)
+spakowanych wersji plików html, artyku³ów usenetu, itp.
+
 %prep
 %setup -q
 %patch0 -p0
 #%patch1 -p0
+%patch2 -p0
 
 %build
 rm -f missing
@@ -162,7 +198,9 @@ db="--with-built-in"
 	--enable-fast-cat \
 	--enable-fast-site \
 	--enable-phrase \
-	--enable-shared
+	--enable-shared \
+	--with-zlib		\
+#	--enable-dmalloc
 
 %{__make}
 
@@ -208,10 +246,13 @@ done
 
 install %{SOURCE1} \
 	$RPM_BUILD_ROOT/etc/cron.daily/mnogosearch-gethostnames
+install -d $RPM_BUILD_ROOT/usr/src/example/mnogosearch
+install %{SOURCE2} $RPM_BUILD_ROOT/usr/src/example/mnogosearch/mysql.sql
 
-install %{SOURCE2} create/mysql/mnogosearch-all.sql
+install -d $RPM_BUILD_ROOT/etc/rc.d/init.d/
+install %{SOURCE3} $RPM_BUILD_ROOT/etc/rc.d/init.d/mnogosearch-stored
 
-cat > create/pgsql/mnogosearch-all.sql <<EOF
+cat > $RPM_BUILD_ROOT/usr/src/example/mnogosearch/pg-sql.sql <<EOF
 \connect template1
 CREATE DATABASE mnogosearch;
 \connect mnogosearch
@@ -286,3 +327,9 @@ su postgres -c "psql -U postgres template1 -c 'DROP DATABASE mnogosearch;' "
 %files static
 %defattr(644,root,root,755)
 %{_libdir}/lib*.a
+
+%files stored
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_sbindir}/stored
+%{dir}/var/lib/mnogosearch/store
+/etc/rc.d/init.d/mnogosearch-stored
