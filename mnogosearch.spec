@@ -79,13 +79,13 @@ dla ma³ych domen oraz intranetu. System nie zosta³ opracowany jako
 wielki system typu Lycos, Infoseek WebCrawler i AltaVista. Natomiast
 nadaje siê do zastosowania w pojedynczej firmie, kampusie lub
 jakiejkolwiek stronie WWW. Zalety:
- - przeszukiwaie tagów mp3,
+ - przeszukiwanie tagów mp3,
  - niusów (Server news://localhost/pl/),
  - htdb czyli baz danych udostêpnianych przez WWW/CGI. (HTDBList SELECT
    \ concat("http://search.mnogo.ru/board/message.php?id=",id) \ FROM
    udm.messages LIMIT 2))
  - zawarto¶ci serwerów ftp (rada za 2gr: "Index no" dla serwera ftp
-   spowoduje nie indexowanie *zawarto¶ci* plików na nim siê znajduj±cych)
+   spowoduje nie indeksowanie *zawarto¶ci* plików na nim siê znajduj±cych)
  - wyszukiwanie w zwyk³ych URL-ach http://
  - wsparcie dla SSL (https://)
  - wyszukiwanie w mirrorach (równie¿ lokalnych) odleg³ych sieci
