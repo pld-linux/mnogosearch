@@ -18,6 +18,7 @@ Version:	3.2.14
 Release:	1
 License:	GPL v2+
 Group:		Networking/Utilities
+#Source0Download: http://www.mnogosearch.ru/download.html
 Source0:	http://www.mnogosearch.ru/Download/%{name}-%{version}.tar.gz
 # Source0-md5:	4849a49f00ea7da6f808cf404be49654
 Source1:	%{name}-gethostnames
