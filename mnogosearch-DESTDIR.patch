@@ -1,0 +1,20 @@
+--- mnogosearch-3.1.16/Makefile.am~	Tue May 15 16:51:19 2001
++++ mnogosearch-3.1.16/Makefile.am	Thu Jun 28 13:36:13 2001
+@@ -14,12 +14,11 @@
+ 	cp -r $(srcdir)/misc/* $(distdir)/misc/
+ 
+ install-data-local:
+-	$(mkinstalldirs) $(localstatedir)
+-	$(mkinstalldirs) $(localstatedir)/raw/
+-	$(mkinstalldirs) $(localstatedir)/splitter/
+-	$(mkinstalldirs) $(localstatedir)/tree/
+-	$(mkinstalldirs) $(localstatedir)/cache/
+-	chmod 777 $(localstatedir)/cache/
++	$(mkinstalldirs) $(DESTDIR)$(localstatedir)
++	$(mkinstalldirs) $(DESTDIR)$(localstatedir)/raw/
++	$(mkinstalldirs) $(DESTDIR)$(localstatedir)/splitter/
++	$(mkinstalldirs) $(DESTDIR)$(localstatedir)/tree/
++	$(mkinstalldirs) $(DESTDIR)$(localstatedir)/cache/
+ 
+ EXTRA_DIST = net.m4 install.pl
+ 
