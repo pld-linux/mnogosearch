@@ -22,7 +22,7 @@ BuildRequires:	autoconf
 BuildRequires:	automake
 BuildRequires:	libtool
 %{?_with_mysql:BuildRequires:	mysql-devel}
-BuildRequires:	openssl-devel
+BuildRequires:	openssl-devel >= 0.9.7
 %{?_with_pgsql:BuildRequires:	postgresql-devel}
 Prereq:		webserver
 %{?_with_pgsql:Prereq:		postgresql-clients}
