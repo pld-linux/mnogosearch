@@ -1,7 +1,15 @@
 #
 # Conditional build:
-# _with_pgsql	support for postgres
-# _with_mysql	support for mysql
+%bcond_with	chasen		# use ChaSen Japanese morphological analisys system
+				# (not tested, maybe on by default?)
+%bcond_without	expat		# without XML support (using expat library)
+%bcond_without	ssl		# without SSL support (using OpenSSL)
+# databases
+%bcond_with	mysql		# support for MySQL
+%bcond_without	pgsql		# support for PostgreSQL
+# databases through ODBC
+%bcond_with	iodbc		# with ODBC support through iODBC
+%bcond_with	unixodbc	# with ODBC support through unixODBC
 #
 Summary:	Another one web indexing and searching system for a small domain or intranet
 Summary(pl):	Kolejny System indeksowania i przeszukiwania www dla ma³ych domen i intranetu
@@ -16,15 +24,21 @@ Source1:	%{name}-gethostnames
 Source2:	%{name}-Mysql-database
 Source3:	%{name}-stored.init
 Source4:	%{name}-dbgen
+Patch0:		%{name}-acfixes.patch
 URL:		http://www.mnogosearch.ru/
 BuildRequires:	autoconf
 BuildRequires:	automake
+%{?with_chasen:BuildRequires:	chasen-devel}
+%{?with_expat:BuildRequires:	expat-devel}
+%{?with_iodbc:BuildRequires:	libiodbc-devel}
 BuildRequires:	libtool
-%{?_with_mysql:BuildRequires:	mysql-devel}
-BuildRequires:	openssl-devel >= 0.9.7c
-%{?_with_pgsql:BuildRequires:	postgresql-devel}
+%{?with_mysql:BuildRequires:	mysql-devel}
+%{?with_ssl:BuildRequires:	openssl-devel >= 0.9.7c}
+%{?with_pgsql:BuildRequires:	postgresql-devel}
+%{?with_unixodbc:BuildRequires:	unixODBC-devel}
+BuildRequires:	zlib-devel
 PreReq:		webserver
-%{?_with_pgsql:PreReq:		postgresql-clients}
+#%{?with_pgsql:PreReq:		postgresql-clients}
 Requires:	%{name}-lib = %{version}
 Obsoletes:	udmsearch
 Obsoletes:	aspseek
@@ -94,7 +108,6 @@ serwera nie ma znaczenia, dopóki pracuje on zgodnie z protoko³em HTTP
 Summary:	mnogosearch library
 Summary(pl):	Biblioteka mnogosearch
 Group:		Libraries
-Requires(post):	/sbin/ldconfig
 
 %description lib
 This package contains mnogosearch library files.
@@ -107,6 +120,13 @@ Summary:	Include files for mnogosearch
 Summary(pl):	Pliki nag³ówkowe mnogosearch
 Group:		Development/Libraries
 Requires:	%{name}-lib = %{version}
+%{?with_expat:Requires:	expat-devel}
+%{?with_iodbc:Requires:	libiodbc-devel}
+%{?with_mysql:Requires:	mysql-devel}
+%{?with_ssl:Requires:	openssl-devel}
+%{?with_pgsql:Requires:	postgresql-devel}
+%{?with_unixodbc:Requires:	unixODBC-devel}
+Requires:	zlib-devel
 
 %description devel
 This package contains mnogosearch development files.
@@ -163,53 +183,54 @@ spakowanych wersji plików html, artyku³ów usenetu, itp.
 
 %prep
 %setup -q
+%patch -p1
 
 %build
 find . -type d -name CVS | xargs rm -rf
-rm -f missing
 %{__libtoolize}
 %{__aclocal}
 %{__autoconf}
 %{__automake}
-
-db="--with-built-in"
-
-%{?_with_mysql: db="--with-mysql"}
-%{?_with_pgsql: db="--with-pgsql"}
-
 %configure \
 	DOCBOOKSTYLE="/usr/share/sgml/docbook/dsssl-stylesheets" \
-	--enable-syslog      \
 	--enable-syslog=LOG_LOCAL6 \
-	--with-image-dir=%{htmldir}/%{name} \
-	--with-cgi-bin-dir=%{cgidir} \
-	--with-search-dir=%{htmldir} \
-	--with-config-dir=%{_sysconfdir}/http/%{name} \
-	--with-openssl \
-	$db \
-	--enable-linux-pthreads \
 	--enable-charset-guesser \
-	--enable-news-extension \
-	--enable-fast-tag \
+	%{?with_chasen:--enable-chasen} \
 	--enable-fast-cat \
+	--enable-fast-tag \
 	--enable-fast-site \
+	--enable-linux-pthreads \
+	--enable-news-extension \
 	--enable-phrase \
 	--enable-shared \
-	--with-zlib		\
-#	--enable-dmalloc
+	--with-built-in \
+	--with-cgi-bin-dir=%{cgidir} \
+	--with-config-dir=%{_sysconfdir}/http/%{name} \
+	%{?with_expat:--with-expat} \
+	--with-image-dir=%{htmldir}/%{name} \
+	%{?with_iodbc:--with-iodbc} \
+	%{?with_mysql:--with-mysql} \
+	%{?with_ssl:--with-openssl} \
+	%{?with_pgsql:--with-pgsql} \
+	--with-search-dir=%{htmldir} \
+	%{?with_unixodbc:--with-unixODBC} \
+	--with-zlib
+
+# --with-readline (for SQL monitor) ?
+# --wiht-extra-charsets=big5,gb2312,gbk,japanese,euc-kr,gujarati,tscii ?
 
 %{__make}
 
 #  enable automatic Russian charset guesser :-]
 # wy uze www.linux.ru procitacli sewodnja?
 
-#  --with-iodbc[=DIR]      Include iODBC support.  DIR is the iODBC base
-#  --with-unixODBC[=DIR]   Include unixODBC support.  DIR is the unixODBC base
 #  --with-solid[=DIR]      Include Solid support.  DIR is the Solid base
 #  --with-openlink[=DIR]   Include OpenLink ODBC support.
 #  --with-easysoft[=DIR]   Include EasySoft ODBC support.
 #  --with-sapdb[=DIR]      Include SAPDB support.  DIR is the SAPDB base
 #  --with-ibase[=DIR]      Include InterBase support.  DIR is the InterBase
+#  --with-ctlib[=DIR]      Include Ct-Lib support.
+#  --with-freetds[=DIR]    Include FreeTDS Ct-Lib support.
 #  --with-oracle7[=DIR]    Include Oracle 7.3 support.  DIR is the Oracle
 #  --with-oracle8[=DIR]    Include Oracle8 support.  DIR is the Oracle
 #  --with-oracle8i[=DIR]   Include Oracle8i support.  DIR is the Oracle
@@ -278,17 +299,18 @@ then read how to setup db connection, and put line like this
 by something like "psql < %{_defaultdocdir}/%{name}-%{version}/create/pgsql/*.txt"
 EOF
 
-%postun	lib -p /sbin/ldconfig
 %post	lib -p /sbin/ldconfig
+%postun	lib -p /sbin/ldconfig
 
-%post pgsql
-echo "Creating database mnogosearch..."
-su postgres -c "psql -U postgres template1 < %{_docdir}/%{name}-%{version}/create/pgsql/mnogosearch-all.psql"
-echo "Mnogosearch user was created with passwd aqq123 - change it!"
-
-%postun pgsql
-echo -n 'Dropping Database mnogosearch:'
-su postgres -c "psql -U postgres template1 -c 'DROP DATABASE mnogosearch;' "
+# can be only in some script - %post/%postun must not mess with databases
+#%post pgsql
+#echo "Creating database mnogosearch..."
+#su postgres -c "psql -U postgres template1 < %{_docdir}/%{name}-%{version}/create/pgsql/mnogosearch-all.psql"
+#echo "Mnogosearch user was created with passwd aqq123 - change it!"
+#
+#%postun pgsql
+#echo -n 'Dropping Database mnogosearch:'
+#su postgres -c "psql -U postgres template1 -c 'DROP DATABASE mnogosearch;' "
 
 %post stored
 /sbin/chkconfig --add mnogosearch-stored

@@ -1,0 +1,224 @@
+--- mnogosearch-3.2.14/configure.in.orig	2003-07-29 12:05:53.000000000 +0200
++++ mnogosearch-3.2.14/configure.in	2003-10-04 12:53:39.032878392 +0200
+@@ -470,8 +470,12 @@
+ if test "$chasen" != no; then
+ 	LIBS_SAVE="$LIBS"
+ 	CFLAGS_SAVE="$CFLAGS"
+-	LIBS="$LIBS -L/usr/local/lib -lchasen"
+-	CFLAGS="$CFLAGS -I/usr/local/include"
++	if test "$chasen" != "yes"; then
++		LIBS="$LIBS -L$chasen/lib -lchasen"
++		CFLAGS="$CFLAGS -I$chasen/include"
++	else
++		LIBS="$LIBS -lchasen"
++	fi
+ 
+ AC_TRY_LINK([#include <stdio.h>
+ #include <chasen.h>
+@@ -500,8 +504,12 @@
+ if test "$mecab" != no; then
+ 	LIBS_SAVE="$LIBS"
+ 	CFLAGS_SAVE="$CFLAGS"
+-	LIBS="$LIBS -L/usr/local/lib -lmecab -lstdc++ -lc_r"
+-	CFLAGS="$CFLAGS -I/usr/local/include"
++	if test "$mecab" != "yes"; then
++		LIBS="$LIBS -L$mecab/lib -lmecab -lstdc++ -lc_r"
++		CFLAGS="$CFLAGS -I$mecab/include"
++	else
++		LIBS="$LIBS -lmecab -lstdc++ -lc_r"
++	fi
+ 
+ AC_TRY_LINK([#include <stdio.h>
+ #include <mecab.h>
+@@ -533,12 +541,12 @@
+         if test "$withval" = "yes"; then
+                 if test -f /usr/include/expat.h; then
+ 			CFLAGS="$CFLAGS"
+-			withval="/usr/"
++			withval="/usr"
+                 else
+                         CFLAGS="$CFLAGS -I/usr/local/include"
+-			withval="/usr/local/"
++			withval="/usr/local"
+                 fi
+-                if test -f /usr/lib/libexpat.a; then
++                if test -f /usr/lib/libexpat.so -o -f /usr/lib/libexpat.a ; then
+ 			LIBS="$LIBS -lexpat"
+                 else
+                         LIBS="$LIBS -L/usr/local/lib -lexpat"
+@@ -549,9 +557,9 @@
+ 		else
+ 			AC_MSG_RESULT(no)
+ 			AC_MSG_ERROR(Invalid Expat directory - unable to find expat.h under $withval)
+-			$withval=""
++			withval=""
+ 		fi
+-		if test -f $withval/lib/libexpat.a; then
++		if test -f $withval/lib/libexpat.so -o -f $withval/lib/libexpat.a; then
+         	        LIBS="$LIBS -L$withval/lib -lexpat"
+ 		else
+ 			AC_MSG_RESULT(no)
+@@ -580,18 +588,17 @@
+                 else
+                         SSL_INCDIR=/usr/local/ssl/include
+                 fi
+-                if test -f /usr/lib/libssl.a; then
+-                        SSL_LIBDIR=/usr/lib
++                if test -f /usr/lib/libssl.so -o -f /usr/lib/libssl.a; then
++                        SSL_LFLAGS="-lcrypto -lssl"
+                 else
+-                        SSL_LIBDIR=/usr/local/ssl/lib
++                        SSL_LFLAGS="-L/usr/local/ssl/lib -lcrypto -lssl"
+                 fi
+         else
+                 SSL_INCDIR=$withval/include
+                 test -d $withval/include/openssl && SSL_INCDIR=$withval/include
+-                SSL_LIBDIR=$withval/lib
++                SSL_LFLAGS="-L$withval/lib -lcrypto -lssl"
+         fi
+     SSL_INCLUDE="-I$SSL_INCDIR"
+-    SSL_LFLAGS="-L$SSL_LIBDIR -lcrypto -lssl"
+     AC_MSG_RESULT(yes)
+     AC_DEFINE(USE_HTTPS)
+   else
+@@ -634,7 +641,7 @@
+ [  --with-readline       enable readline support for SQL monitor],
+ [
+   AC_DEFINE(HAVE_READLINE)
+-  LIBS="$LIBS -lreadline -ltermcap"
++  LIBS="$LIBS -lreadline"
+   AC_MSG_RESULT(yes)
+ ],
+ [AC_MSG_RESULT([no])]
+@@ -662,7 +669,7 @@
+ 			withval="/usr/local/mysql"
+ 		elif test -f /usr/include/mysql/mysql.h; then
+ 			MYSQL_INCDIR=/usr/include/mysql
+-			MYSQL_LIBDIR=/usr/lib/mysql
++			MYSQL_LIBDIR=/usr/lib
+ 			withval="/usr"
+ 		elif test -f /usr/include/mysql.h; then
+ 			MYSQL_INCDIR=/usr/include
+@@ -697,7 +704,11 @@
+ 		fi
+    	fi
+     MYSQL_INCLUDE="-I$MYSQL_INCDIR"
++    if test "$MYSQL_LIBDIR" = "/usr/lib" ; then
++	MYSQL_LFLAGS="-lmysqlclient"
++    else
+     MYSQL_LFLAGS="-L$MYSQL_LIBDIR -lmysqlclient"
++    fi
+ 
+     AC_DEFINE(HAVE_MYSQL)
+     AC_MSG_RESULT($withval)
+@@ -735,8 +746,8 @@
+ 		test -f /usr/include/postgresql/libpq-fe.h && PGSQL_INCDIR=/usr/include/postgresql
+ 		test -f /usr/local/include/libpq-fe.h && PGSQL_INCDIR=/usr/local/include
+ 		PGSQL_LIBDIR=/usr/local/lib
+-		test -f /usr/lib/libpq.a && PGSQL_LIBDIR=/usr/lib
+-		test -f /usr/local/pgsql/lib/libpq.a && PGSQL_LIBDIR=/usr/local/pgsql/lib
++		test -f /usr/lib/libpq.so -o -f /usr/lib/libpq.a && PGSQL_LIBDIR=/usr/lib
++		test -f /usr/local/pgsql/lib/libpq.so -o -f /usr/local/pgsql/lib/libpq.a && PGSQL_LIBDIR=/usr/local/pgsql/lib
+    	else
+    		PGSQL_INCDIR=$withval/include
+    		test -d $withval/include/pgsql && PGSQL_INCDIR=$withval/include/pgsql
+@@ -744,7 +755,11 @@
+    		test -d $withval/lib/pgsql && PGSQL_LIBDIR=$withval/lib/pgsql
+    	fi
+     PGSQL_INCLUDE="-I$PGSQL_INCDIR"
++    if "$PGSQL_LIBDIR" = "/usr/lib"; then
++	PGSQL_LFLAGS="-lpq"
++    else
+     PGSQL_LFLAGS="-L$PGSQL_LIBDIR -lpq"
++    fi
+     AC_DEFINE(HAVE_PGSQL)
+     AC_MSG_RESULT(yes)
+     have_db=yes
+@@ -809,7 +824,7 @@
+                           install directory, defaults to /usr/local.],
+ [
+ 	if test "$withval" = "yes"; then
+-		withval=/usr/local
++		withval=/usr
+ 	fi
+ 
+ 	if test "$withval" != "no"; then
+@@ -820,8 +835,16 @@
+     			AC_MSG_RESULT(no)
+ 			AC_MSG_ERROR(Invalid iODBC directory - unable to find isql.h)
+ 		fi
++		if test "$IODBC_LIBDIR" = "/usr/lib"; then
++			IODBC_LFLAGS="-liodbc"
++		else
+ 		IODBC_LFLAGS="-L$IODBC_LIBDIR -liodbc"
++		fi
++		if test "$IODBC_INCDIR" = "/usr/include"; then
++			IODBC_INCLUDE=
++		else
+ 		IODBC_INCLUDE="-I$IODBC_INCDIR"
++		fi
+ 		AC_DEFINE(HAVE_IODBC)
+ 		AC_MSG_RESULT(yes)
+ 		have_db=yes
+@@ -842,12 +865,12 @@
+ if test "$withval" != "no"; then
+ 	if test "$withval" = "yes"; then
+ 		if test -f /usr/include/sql.h; then
+-			UNIXODBC_INCDIR=/usr/include
+-			UNIXODBC_LIBDIR=/usr/lib
++			UNIXODBC_INCLUDE=
++			UNIXODBC_LFLAGS="-lodbc"
+ 			withval="/usr"
+ 		elif test -f /usr/local/include/sql.h; then
+-			UNIXODBC_INCDIR=/usr/local/include
+-			UNIXODBC_LIBDIR=/usr/local/lib
++			UNIXODBC_INCLUDE="-I/usr/local/include"
++			UNIXODBC_LFLAGS="-L/usr/local/lib -lodbc"
+ 			withval="/usr/local"
+ 		else
+ 			AC_MSG_RESULT(no)
+@@ -855,16 +878,14 @@
+ 		fi
+ 	else
+ 		if test -f $withval/include/sql.h; then
+-			UNIXODBC_INCDIR=$withval/include
+-			UNIXODBC_LIBDIR=$withval/lib
++			UNIXODBC_INCLUDE="-I$withval/include"
++			UNIXODBC_LFLAGS="-L$withval/lib -lodbc"
+ 		else
+     			AC_MSG_RESULT(no)
+ 			AC_MSG_ERROR(Invalid unixODBC directory - unable to find sql.h)
+ 		fi
+ 	fi
+ 	have_db=yes
+-	UNIXODBC_LFLAGS="-L$UNIXODBC_LIBDIR -lodbc"
+-	UNIXODBC_INCLUDE="-I$UNIXODBC_INCDIR"
+ 	AC_DEFINE(HAVE_UNIXODBC)
+ 	AC_MSG_RESULT($withval)
+ 	if test "x$DBTYPE" = "x" ; then
+@@ -1178,7 +1199,7 @@
+                           install directory, defaults to /usr/local.],
+ [
+ 	if test "$withval" = "yes"; then
+-		withval=/usr/local
++		withval=/usr
+ 	fi
+ 
+ 	if test "$withval" != "no"; then
+@@ -1189,8 +1210,16 @@
+     			AC_MSG_RESULT(no)
+ 			AC_MSG_ERROR(Invalid FreeTDS directory - unable to find ctpublic.h)
+ 		fi
++		if test "$CTLIB_LIBDIR" = "/usr/lib"; then
++			CTLIB_LFLAGS="-lct"
++		else
+ 		CTLIB_LFLAGS="-L$CTLIB_LIBDIR -lct"
++		fi
++		if test "$CTLIB_INCDIR" = "/usr/include"; then
++			CTLIB_INCLUDE=
++		else
+ 		CTLIB_INCLUDE="-I$CTLIB_INCDIR"
++		fi
+ 		AC_DEFINE(HAVE_CTLIB)
+ 		AC_MSG_RESULT(yes)
+ 		have_db=yes
