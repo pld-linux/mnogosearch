@@ -155,6 +155,7 @@ spakowanych wersji plików html, artyku³ów usenetu, itp.
 %patch2 -p0
 
 %build
+find . -type d -name CVS | xargs rm -rf
 rm -f missing
 libtoolize --copy --force
 aclocal
@@ -241,9 +242,8 @@ cat > $RPM_BUILD_ROOT/usr/src/example/mnogosearch/pg-sql.sql <<EOF
 CREATE DATABASE mnogosearch;
 \connect mnogosearch
 EOF
-cat create/pgsql/{create,crc-multi,news-extension}.txt \
-	>> create/pgsql/mnogosearch-all.sql
-cat >> create/pgsql/mnogosearch-all.sql <<EOF
+cat pgsql/{create,crc-multi,news-extension}.txt >> pgsql/mnogosearch-all.sql
+cat >> pgsql/mnogosearch-all.sql <<EOF
 CREATE USER "mnogosearch" WITH PASSWORD 'aqq123' NOCREATEDB NOCREATEUSER;
 GRANT ALL ON url,dict,robots,stopword,categories,next_url_id,affix TO mnogosearch;
 GRANT ALL ON ndict,server,thread,spell,next_cat_id,next_server_id,next_url_id TO mnogosearch;
@@ -256,7 +256,6 @@ EOF
 
 mkdir html
 mv -f doc/*.html html
-rm -rf doc/samples/CVS create/CVS create/*/CVS
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -283,7 +282,9 @@ su postgres -c "psql -U postgres template1 -c 'DROP DATABASE mnogosearch;' "
 
 %files
 %defattr(644,root,root,755)
-%doc ChangeLog README TODO html doc/samples create
+%doc ChangeLog README TODO html doc/samples
+# instructions for database creation
+%doc db2 ibase msql mysql oracle pgsql sapdb solid sybase virtuoso
 %attr(755,root,root) %{_libdir}/lib*-*.so
 %attr(755,root,root) %{_sbindir}/*
 %attr(755,root,root) %{cgidir}/*
@@ -315,5 +316,5 @@ su postgres -c "psql -U postgres template1 -c 'DROP DATABASE mnogosearch;' "
 %files stored
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_sbindir}/stored
-%{dir}/var/lib/mnogosearch/store
+/var/lib/mnogosearch/store
 /etc/rc.d/init.d/mnogosearch-stored
