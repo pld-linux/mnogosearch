@@ -98,19 +98,15 @@ Group(pl):	Sieciowe/Narzêdzia
 Requires:	%{name} = %{version}
 
 %description pgsql
-The mnogosearch system is a complete world wide web indexing and
-searching system for a small domain or intranet. This system is not
-meant to replace the need for powerful internet-wide search systems
-like Lycos, Infoseek, Webcrawler and AltaVista. Instead it is meant to
-cover the search needs for a single company, campus, or even a
-particular sub section of a web site.
-
-As opposed to some WAIS-based or web-server based search engines,
-mnogosearch can span several web servers at a site. The type of these
-different web servers doesn't matter as long as they understand the
-HTTP 1.0 protocol. Mnogosearch supports also virtual domains.
 
 This package contains pgsql storage support.
+Note: install will try to create tables in database mnogosearch.
+
+%description -l pl pgsql 
+
+Ten pakiet zawiera wsparcie dla postgresa jako sposobu przechowywania 
+informacji. 
+Instalacja tego pakietu spowoduje za³o¿enie tabel w bazie mnogosearch.
 
 %package static
 Summary:	mnogo static libraries
@@ -217,8 +213,10 @@ Please see docs (%{_defaultdocdir}/%{name} or http://localhost/mnogodoc),
 then read how to setup db connection, and put line like this 
 "pgsql://user:password@/dbname/" into %{_sysconfdir}, then run sth like 
 psql < %{_defaultdocdir}/%{name}/pgsql/*.txt
-Now I will try to Create Tables for postgres: 
 EOF
+
+%post pgsql
+echo 'Now I will try to Create Tables for postgres: '
 su postgres -c "psql -U postgres template1 -c 'CREATE DATABASE mnogosearch;' "
 echo "Trying to Create Tables:"
 su postgres -c "psql -U postgres mnogosearch < /usr/share/doc/mnogosearch-3.1.17/pgsql/create.txt"
@@ -226,11 +224,12 @@ echo "Trying to Create Tables for crc-multi storage method:"
 su postgres -c "psql -U postgres mnogosearch < /usr/share/doc/mnogosearch-3.1.17/pgsql/crc-multi.txt"
 echo "Trying to Create Tables for news extension:"
 su postgres -c "psql -U postgres mnogosearch < /usr/share/doc/mnogosearch-3.1.17/pgsql/news-extension.txt"
-echo "Mnogosearch user will be created with passwd aqq123 change it ! and I mean it realy !"
+echo "Mnogosearch user will be created with passwd aqq123 change it ! and I mean it really !"
 echo 'CREATE USER "mnogosearch" WITH PASSWORD '"'aqq123'"' NOCREATEDB NOCREATEUSER;' > /tmp/aqq
 su postgres -c "psql -U postgres mnogosearch < /tmp/aqq"
 echo "Granting Permisions..."
 cat > /tmp/mnogo.aqq << EOF
+
 GRANT ALL ON url,dict,robots,stopword,categories,next_url_id,affix TO mnogosearch;
 
 GRANT ALL ON ndict,server,thread,spell,next_cat_id,next_server_id,next_url_id TO mnogosearch;
@@ -245,6 +244,10 @@ GRANT ALL ON "qtrack" TO mnogosearch;
 EOF
 su postgres -c "psql -U postgres template1 -f /tmp/mnogo.aqq"
 rm -f /tmp/mnogo.aqq
+
+%postun pgsql
+echo -n 'Dropping Database mnogosearch:' 
+su postgres -c "psql -U postgres template1 -c 'DROP DATABASE mnogosearch;' "
 
 %files
 %defattr(644,root,root,755)
