@@ -84,7 +84,7 @@ jakiejkolwiek stronie WWW. Zalety:
  - htdb czyli baz danych udostêpnianych przez WWW/CGI. (HTDBList SELECT
    \ concat("http://search.mnogo.ru/board/message.php?id=",id) \ FROM
    udm.messages LIMIT 2))
- - zawarto¶ci serwerów ftp (rada za 2gr: "Index no" dla serwera ftp
+ - zawarto¶ci serwerów FTP (rada za 2gr: "Index no" dla serwera FTP
    spowoduje nie indeksowanie *zawarto¶ci* plików na nim siê znajduj±cych)
  - wyszukiwanie w zwyk³ych URL-ach http://
  - wsparcie dla SSL (https://)
