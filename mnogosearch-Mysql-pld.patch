@@ -1,0 +1,11 @@
+--- /home/users/hunter/backup/configure.in~	Thu Apr 18 10:37:03 2002
++++ configure.in	Thu Apr 18 10:41:10 2002
+@@ -456,7 +456,7 @@
+ 			MYSQL_LIBDIR=/usr/local/mysql/lib/mysql
+ 		elif test -f /usr/include/mysql/mysql.h; then
+ 			MYSQL_INCDIR=/usr/include/mysql
+-			MYSQL_LIBDIR=/usr/lib/mysql
++			MYSQL_LIBDIR=/usr/lib
+ 		elif test -f /usr/include/mysql.h; then
+ 			MYSQL_INCDIR=/usr/include
+ 			MYSQL_LIBDIR=/usr/lib
