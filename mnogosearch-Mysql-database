@@ -1,0 +1,207 @@
+-- MySQL dump 8.21
+--
+-- Host: localhost    Database: mnogo
+---------------------------------------------------------
+-- Server version	3.23.49
+
+--
+-- Table structure for table 'categories'
+--
+
+DROP TABLE IF EXISTS categories;
+CREATE TABLE categories (
+  rec_id int(11) NOT NULL auto_increment,
+  path char(10) NOT NULL default '',
+  link char(10) NOT NULL default '',
+  name char(64) NOT NULL default '',
+  PRIMARY KEY  (rec_id)
+) TYPE=MyISAM;
+
+--
+-- Dumping data for table 'categories'
+--
+
+
+
+--
+-- Table structure for table 'crossdict'
+--
+
+DROP TABLE IF EXISTS crossdict;
+CREATE TABLE crossdict (
+  url_id int(11) NOT NULL default '0',
+  ref_id int(11) NOT NULL default '0',
+  word varchar(32) NOT NULL default '0',
+  intag int(11) NOT NULL default '0',
+  KEY url_id (url_id),
+  KEY ref_id (ref_id),
+  KEY word (word)
+) TYPE=MyISAM;
+
+--
+-- Dumping data for table 'crossdict'
+--
+
+
+
+--
+-- Table structure for table 'dict'
+--
+
+DROP TABLE IF EXISTS dict;
+CREATE TABLE dict (
+  url_id int(11) NOT NULL default '0',
+  word varchar(32) NOT NULL default '',
+  intag int(11) NOT NULL default '0',
+  KEY url_id (url_id),
+  KEY word_url (word)
+) TYPE=MyISAM;
+
+--
+-- Dumping data for table 'dict'
+--
+
+
+
+--
+-- Table structure for table 'ncrossdict'
+--
+
+DROP TABLE IF EXISTS ncrossdict;
+CREATE TABLE ncrossdict (
+  url_id int(11) NOT NULL default '0',
+  ref_id int(11) NOT NULL default '0',
+  word_id int(11) NOT NULL default '0',
+  intag int(11) NOT NULL default '0',
+  KEY url_id (url_id),
+  KEY ref_id (ref_id),
+  KEY word_id (word_id)
+) TYPE=MyISAM;
+
+--
+-- Dumping data for table 'ncrossdict'
+--
+
+
+
+--
+-- Table structure for table 'ndict'
+--
+
+DROP TABLE IF EXISTS ndict;
+CREATE TABLE ndict (
+  url_id int(11) NOT NULL default '0',
+  word_id int(11) NOT NULL default '0',
+  intag int(11) NOT NULL default '0',
+  KEY url_id (url_id),
+  KEY word_id (word_id)
+) TYPE=MyISAM;
+
+--
+-- Dumping data for table 'ndict'
+--
+
+
+
+--
+-- Table structure for table 'qtrack'
+--
+
+DROP TABLE IF EXISTS qtrack;
+CREATE TABLE qtrack (
+  qwords varchar(63) NOT NULL default '',
+  ip varchar(16) NOT NULL default '',
+  qtime int(11) NOT NULL default '0',
+  found int(11) NOT NULL default '0',
+  ps int(11) NOT NULL default '0',
+  np int(11) NOT NULL default '0',
+  m varchar(63) NOT NULL default '',
+  wm varchar(63) NOT NULL default '',
+  o int(11) NOT NULL default '0',
+  t varchar(63) NOT NULL default '',
+  cat varchar(63) NOT NULL default '',
+  ul varchar(63) NOT NULL default '',
+  wf varchar(63) NOT NULL default '',
+  g varchar(63) NOT NULL default '',
+  tmplt varchar(63) NOT NULL default ''
+) TYPE=MyISAM;
+
+--
+-- Dumping data for table 'qtrack'
+--
+
+
+
+--
+-- Table structure for table 'robots'
+--
+
+DROP TABLE IF EXISTS robots;
+CREATE TABLE robots (
+  hostinfo varchar(127) NOT NULL default '',
+  path varchar(127) NOT NULL default ''
+) TYPE=MyISAM;
+
+--
+-- Dumping data for table 'robots'
+--
+
+
+
+--
+-- Table structure for table 'thread'
+--
+
+DROP TABLE IF EXISTS thread;
+CREATE TABLE thread (
+  parent int(4) NOT NULL default '0',
+  child int(4) NOT NULL default '0'
+) TYPE=MyISAM;
+
+--
+-- Dumping data for table 'thread'
+--
+
+
+
+--
+-- Table structure for table 'url'
+--
+
+DROP TABLE IF EXISTS url;
+CREATE TABLE url (
+  rec_id int(11) NOT NULL auto_increment,
+  status int(11) NOT NULL default '0',
+  url varchar(128) binary NOT NULL default '',
+  content_type varchar(48) NOT NULL default '',
+  title varchar(128) NOT NULL default '',
+  txt varchar(255) NOT NULL default '',
+  docsize int(11) NOT NULL default '0',
+  next_index_time int(11) NOT NULL default '0',
+  last_mod_time int(11) NOT NULL default '0',
+  referrer int(11) NOT NULL default '0',
+  tag varchar(16) NOT NULL default '0',
+  hops int(11) NOT NULL default '0',
+  category varchar(16) NOT NULL default '',
+  keywords varchar(255) NOT NULL default '',
+  description varchar(100) NOT NULL default '',
+  crc32 int(11) NOT NULL default '0',
+  lang varchar(32) NOT NULL default '',
+  charset varchar(40) NOT NULL default '',
+  header_date datetime default NULL,
+  header_subj text NOT NULL,
+  header_from text NOT NULL,
+  header_group text NOT NULL,
+  header_refs text NOT NULL,
+  msg_id text NOT NULL,
+  PRIMARY KEY  (rec_id),
+  UNIQUE KEY url (url),
+  KEY key_crc (crc32)
+) TYPE=MyISAM;
+
+--
+-- Dumping data for table 'url'
+--
+
+
+
