@@ -8,7 +8,7 @@ Summary(pl):	Kolejny System indeksowania i przeszukiwania www dla ma³ych domen i
 Name:		mnogosearch
 Version:	3.2.6
 Release:	3
-License:	GPL
+License:	GPL v2+
 Group:		Networking/Utilities
 Source0:	http://www.mnogosearch.ru/Download/%{name}-%{version}.tar.gz
 Source1:	%{name}-gethostnames
