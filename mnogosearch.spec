@@ -7,7 +7,7 @@ Summary:	Another one web indexing and searching system for a small domain or int
 Summary(pl):	Kolejny System indeksowania i przeszukiwania www dla ma³ych domen i intranetu
 Name:		mnogosearch
 Version:	3.2.3
-Release:	1
+Release:	2
 License:	GPL
 Group:		Networking/Utilities
 Source0:	http://www.mnogosearch.ru/Download/%{name}-%{version}.tar.gz
@@ -25,6 +25,7 @@ BuildRequires:	openssl-devel
 Prereq:		webserver
 %{?_with_pgsql:Prereq:		postgresql-clients}
 Requires(post):	/sbin/ldconfig
+Obsoletes:	udmsearch
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		_sysconfdir	/etc/%{name}
@@ -228,7 +229,6 @@ dict11,dict12,dict16,dict32 TO mnogosearch;
 GRANT ALL ON "qtrack" TO mnogosearch;
 EOF
 
-gzip -9nf ChangeLog README TODO
 mkdir html
 mv -f doc/*.html html
 rm -rf doc/samples/CVS create/CVS create/*/CVS
@@ -258,7 +258,7 @@ su postgres -c "psql -U postgres template1 -c 'DROP DATABASE mnogosearch;' "
 
 %files
 %defattr(644,root,root,755)
-%doc *.gz html doc/samples create
+%doc ChangeLog README TODO html doc/samples create
 %attr(755,root,root) %{_libdir}/lib*-*.so
 %attr(755,root,root) %{_sbindir}/*
 %attr(755,root,root) %{cgidir}/*
