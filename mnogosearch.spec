@@ -157,7 +157,7 @@ spakowanych wersji plików html, artyku³ów usenetu, itp.
 %build
 find . -type d -name CVS | xargs rm -rf
 rm -f missing
-libtoolize --copy --force
+%{__libtoolize}
 aclocal
 %{__autoconf}
 %{__automake}
