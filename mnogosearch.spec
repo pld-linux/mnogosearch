@@ -1,20 +1,31 @@
+# conditional build:
+# _pgsql support for postgres
+# _mysql support for mysql
+
 Summary:	A another one web indexing and searching system for a small domain or intranet
 Summary(pl):	Kolejny System indeksowania i przeszukiwania www dla ma≥ych domen i intranetu
 Name:		mnogosearch
-Version:	3.1.17
-Release:	2
+Version:	3.2.3
+Release:	1
 License:	GPL
 Group:		Networking/Utilities
+Group(de):	Netzwerkwesen/Werkzeuge
+Group(es):	Red/Utilitarios
+Group(pl):	Sieciowe/NarzÍdzia
+Group(pt_BR):	Rede/Utilit·rios
 Source0:	http://www.mnogosearch.ru/Download/%{name}-%{version}.tar.gz
+Source2:	%{name}-gethostnames
+%{?_mysql:Source1:		%{name}-Mysql-database}
 Patch0:		%{name}-DESTDIR.patch
-Source1:	%{name}-gethostnames
+%{?_mysql:Patch1:		%{name}-Mysql-pld.patch}
 URL:		http://www.mnogosearch.ru/
-BuildRequires:	postgresql-devel
+%{?_pgsql:BuildRequires:	postgresql-devel}
+%{?_mysql:BuildRequires:	mysql-devel}
 BuildRequires:	autoconf
 BuildRequires:	automake
 BuildRequires:	libtool
 Prereq:		webserver
-Prereq:		postgresql-clients
+%{?_pgsql:Prereq:		postgresql-clients}
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		_sysconfdir	/etc/httpd/%{name}
@@ -33,8 +44,8 @@ particular sub section of a web site. Features:
  - charset guesser
  - externel parsers
  - support for ssl (https://)
- - limiting queries to one hostname by sth like this: <INPUT
-   TYPE=HIDDEN NAME=ul VALUE=http://www.something.com/>
+ - limiting queries to one hostname by sth like this:
+   <INPUT TYPE=HIDDEN NAME=ul VALUE=http://www.something.com/>
  - it's posilble to run indexers on several diffrent (theoreticaly 128)
    hosts, and gather information on one of them, reindexing proceses make
    no harm to avalibility of search engine. See cachemode.txt
@@ -52,18 +63,18 @@ nadaje siÍ do zastosowania w pojedynczej firmie, kampusie lub
 jakiejkolwiek stronie www. Zalety:
  - przeszukiwaie tagÛw mp3,
  - niusÛw (Server news://localhost/pl/),
- - htdb czyli baz danych udostÍpnianych przez www/cgi. (HTDBList SELECT
-   \ concat("http://search.mnogo.ru/board/message.php?id=",id) \ FROM
-   udm.messages LIMIT 2))
+ - htdb czyli baz danych udostÍpnianych przez www/cgi. (HTDBList SELECT \
+   concat("http://search.mnogo.ru/board/message.php?id=",id) \ 
+   FROM udm.messages LIMIT 2))
  - zawarto∂ci serwerÛw ftp (rada za 2gr: "Index no" dla serwera ftp
    spowoduje nie indexowanie *zawarto∂ci* plikÛw na nim siÍ znajduj±cych)
- - wyszukiwanie w zwyk≥ych URL-ach http://
+ - wyszukiwanie w zwyk≥ych URL-ach http:// 
  - wsparcie dla SSL (https://)
  - wyszukiwanie w mirrorach (rÛwnieø lokalnych) odleg≥ych sieci
  - zgadywanie zestawu znakÛw
  - zewnÍtrzne przetwarzacze dokumentÛw na potrzeby indeksowania
- - ograniczanie zapytaÒ do jednej nazwy hosta: <INPUT TYPE=HIDDEN
-   NAME=ul VALUE=http://www.something.com/>
+ - ograniczanie zapytaÒ do jednej nazwy hosta:
+   <INPUT TYPE=HIDDEN NAME=ul VALUE=http://www.something.com/>
  - kategoryzacja witryny (doc/categories.txt)
  - moøliwe jest uruchomienie kilku procesÛw indeksuj±cych na kilku
    (teoretycznie 128) hostach i trzymanie bazy na jednym z nich,
@@ -79,6 +90,13 @@ serwera nie ma znaczenia, dopÛki pracuje on zgodnie z protoko≥em HTTP
 Summary:	Include files and libraries for mnogo
 Summary(pl):	Pliki nag≥Ûwkowe dla mnogo
 Group:		Development/Libraries
+Group(de):	Entwicklung/Libraries
+Group(es):	Desarrollo/Bibliotecas
+Group(fr):	Development/Librairies
+Group(pl):	Programowanie/Biblioteki
+Group(pt_BR):	Desenvolvimento/Bibliotecas
+Group(ru):	Ú¡⁄“¡¬œ‘À¡/‚…¬Ã…œ‘≈À…
+Group(uk):	Úœ⁄“œ¬À¡/‚¶¬Ã¶œ‘≈À…
 Requires:	%{name} = %{version}
 
 %description devel
@@ -87,10 +105,16 @@ This package contains mnogosearch development files.
 %description devel -l pl
 Pliki dla programistÛw mnogosearch.
 
+%if%{?_pgsql:1}%{!?_pgsql:0}
+
 %package pgsql
-Summary:	mnogosearch with pgsql storage-support
+Summary:	mnogosearch with pgsql storage-support 
 Summary(pl):	mnogosearch z pgsqlem jako metod± przechowywania danych
 Group:		Networking/Utilities
+Group(de):	Netzwerkwesen/Werkzeuge
+Group(es):	Red/Utilitarios
+Group(pl):	Sieciowe/NarzÍdzia
+Group(pt_BR):	Rede/Utilit·rios
 Requires:	%{name} = %{version}
 
 %description pgsql
@@ -100,14 +124,22 @@ Note: install will try to create tables in database mnogosearch.
 
 %description pgsql -l pl
 Ten pakiet zawiera wsparcie dla postgresa jako sposobu przechowywania
-informacji.
+informacji. 
 
 Instalacja tego pakietu spowoduje za≥oøenie tabel w bazie mnogosearch.
+%endif
 
 %package static
 Summary:	mnogo static libraries
 Summary(pl):	Biblioteki statyczne mnogo
 Group:		Development/Libraries
+Group(de):	Entwicklung/Libraries
+Group(es):	Desarrollo/Bibliotecas
+Group(fr):	Development/Librairies
+Group(pl):	Programowanie/Biblioteki
+Group(pt_BR):	Desenvolvimento/Bibliotecas
+Group(ru):	Ú¡⁄“¡¬œ‘À¡/‚…¬Ã…œ‘≈À…
+Group(uk):	Úœ⁄“œ¬À¡/‚¶¬Ã¶œ‘≈À…
 Requires:	%{name}-devel = %{version}
 
 %description static
@@ -118,16 +150,20 @@ Ten pakiet zawiera statyczne biblioteki mnogosearch.
 
 %prep
 %setup -q
-%patch0 -p1
+%patch0 -p0
+#%patch1 -p0
 
 %build
 libtoolize --copy --force
 aclocal
 autoconf
-automake -a -c -f
-#where the hell is pgsql?
-sed -e 's%{_prefix}\/include\/pgsql%{_prefix}\/include\/postgresql/' < configure.in > aqq
-mv -f aqq  configure.in
+automake -a -c
+
+db="--with-built-in"
+
+%{?_mysql: db="--with-mysql"}
+%{?_pgsql: db="--with-pgsql"}
+
 %configure \
 	--enable-syslog      \
 	--enable-syslog=LOG_LOCAL6 \
@@ -136,36 +172,35 @@ mv -f aqq  configure.in
 	--with-search-dir=/home/httpd/html \
 	--with-config-dir=%{_sysconfdir}/http/%{name} \
 	--infodir=%{_infodir} \
-	--with-pgsql \
 	--with-openssl \
+	$db \
 	--enable-linux-pthreads \
 	--enable-charset-guesser \
 	--enable-news-extension \
 	--enable-fast-tag \
 	--enable-fast-cat \
 	--enable-fast-site \
-	--enable-phrase
+	--enable-phrase    \
+
+%{__make}
+
 
 #  enable automatic Russian charset guesser :-]
 # wy uze www.linux.ru procitacli sewodnja?
 
-#  --with-msql[=DIR]       Include mSQL support.  DIR is the mSQL base
 #  --with-iodbc[=DIR]      Include iODBC support.  DIR is the iODBC base
 #  --with-unixODBC[=DIR]   Include unixODBC support.  DIR is the unixODBC base
 #  --with-solid[=DIR]      Include Solid support.  DIR is the Solid base
-#  --with-openlink[=DIR]   Include OpenLink ODBC support.
-#  --with-easysoft[=DIR]   Include EasySoft ODBC support.
+#  --with-openlink[=DIR]   Include OpenLink ODBC support. 
+#  --with-easysoft[=DIR]   Include EasySoft ODBC support. 
 #  --with-sapdb[=DIR]      Include SAPDB support.  DIR is the SAPDB base
 #  --with-ibase[=DIR]      Include InterBase support.  DIR is the InterBase
 #  --with-oracle7[=DIR]    Include Oracle 7.3 support.  DIR is the Oracle
 #  --with-oracle8[=DIR]    Include Oracle8 support.  DIR is the Oracle
 #  --with-oracle8i[=DIR]   Include Oracle8i support.  DIR is the Oracle
-#	--with-buildin \
-#	--with-mysql \
-#
+#	
 # FIXME: add selection of storage method, spliting into %{name}-common & %{name}-$DB_NAME
 
-%{__make}
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -186,8 +221,10 @@ install $RPM_BUILD_ROOT%{_bindir}/search.cgi $RPM_BUILD_ROOT/home/httpd/cgi-bin/
 touch $RPM_BUILD_ROOT%{_sysconfdir}/locals
 install %{SOURCE1} \
 	$RPM_BUILD_ROOT/etc/cron.daily/mnogosearch-gethostnames
+install %{SOURCE2} create/
 
 gzip -z9 create/*
+gzip -z9 create/*/*
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -196,11 +233,14 @@ rm -rf $RPM_BUILD_ROOT
 cp -f %{_sysconfdir}/indexer.conf-dist %{_sysconfdir}/indexer.conf
 
 cat << EOF
-Please see docs (%{_defaultdocdir}/%{name} or http://localhost/mnogodoc),
-then read how to setup db connection, and put line like this
-"pgsql://user:password@/dbname/" into %{_sysconfdir}, then run sth like
+Please see docs (%{_defaultdocdir}/%{name} or http://localhost/mnogodoc), 
+then read how to setup db connection, and put line like this 
+"pgsql://user:password@/dbname/" into %{_sysconfdir}, then run sth like 
 psql < %{_defaultdocdir}/%{name}/pgsql/*.txt
 EOF
+
+
+%if%{?_pgsql:1}%{!?_pgsql:0}
 
 %post pgsql
 echo 'Now I will try to Create Tables for postgres: '
@@ -233,9 +273,10 @@ su postgres -c "psql -U postgres template1 -f /tmp/mnogo.aqq"
 rm -f /tmp/mnogo.aqq
 
 %postun pgsql
-echo -n 'Dropping Database mnogosearch:'
+echo -n 'Dropping Database mnogosearch:' 
 su postgres -c "psql -U postgres template1 -c 'DROP DATABASE mnogosearch;' "
-
+%endif # _pgsql
+	
 %files
 %defattr(644,root,root,755)
 %doc COPYING README doc/* create/* create/*/*
@@ -254,7 +295,7 @@ su postgres -c "psql -U postgres template1 -c 'DROP DATABASE mnogosearch;' "
 
 %files devel
 %defattr(644,root,root,755)
-#%{_includedir}/%{name}/*
+%{_includedir}/*
 
 %files static
 %defattr(644,root,root,755)
