@@ -15,14 +15,13 @@ Summary:	Another one web indexing and searching system for a small domain or int
 Summary(pl):	Kolejny System indeksowania i przeszukiwania www dla ma³ych domen i intranetu
 Name:		mnogosearch
 Version:	3.2.18
-Release:	1
+Release:	2
 License:	GPL v2+
 Group:		Networking/Utilities
 #Source0Download: http://www.mnogosearch.ru/download.html
 Source0:	http://www.mnogosearch.ru/Download/%{name}-%{version}.tar.gz
 # Source0-md5:	b72b5157e4aae232a70533ccc589ba14
-Source1:	%{name}-gethostnames
-Source2:	%{name}-dbgen
+Source1:	%{name}-dbgen
 Patch0:		%{name}-acfixes.patch
 URL:		http://www.mnogosearch.ru/
 BuildRequires:	autoconf
@@ -219,10 +218,8 @@ ln -sf %{_defaultdocdir}/%{name}-%{version}/html \
 mv -f $RPM_BUILD_ROOT%{_bindir}/*.cgi \
 	$RPM_BUILD_ROOT%{cgidir}
 
-install %{SOURCE1} \
-	$RPM_BUILD_ROOT/etc/cron.daily/mnogosearch-gethostnames
 install -d $RPM_BUILD_ROOT/usr/src/example/mnogosearch
-install %{SOURCE2} $RPM_BUILD_ROOT/etc/cron.daily/mnogosearch-dbgen
+install %{SOURCE1} $RPM_BUILD_ROOT/etc/cron.daily/mnogosearch-dbgen
 
 mkdir html
 cp -af doc/*.{html,css} html
@@ -240,10 +237,10 @@ rm -rf $RPM_BUILD_ROOT
 
 %post
 cat << EOF
-Please see docs (%{_defaultdocdir}/%{name}-%{version} or http://localhost/mnogodoc),
+Please see docs (%{_defaultdocdir}/%{name}-%{version}),
 then read how to setup db connection, and put line like this
 "pgsql://user:password@/dbname/" into %{_sysconfdir}, then setup database
-by something like "psql < %{_defaultdocdir}/%{name}-%{version}/create/pgsql/*.txt"
+using "indexer -Ecreate" command.
 EOF
 
 %post	lib -p /sbin/ldconfig
