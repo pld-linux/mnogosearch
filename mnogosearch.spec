@@ -213,7 +213,7 @@ db="--with-built-in"
 #  --with-oracle7[=DIR]    Include Oracle 7.3 support.  DIR is the Oracle
 #  --with-oracle8[=DIR]    Include Oracle8 support.  DIR is the Oracle
 #  --with-oracle8i[=DIR]   Include Oracle8i support.  DIR is the Oracle
-#	
+#
 # FIXME: add selection of storage method, spliting into %{name}-common & %{name}-$DB_NAME
 
 %install
@@ -300,7 +300,7 @@ if [ "$1" = "0" ]; then
 	fi
 	/sbin/chkconfig --del mnogosearch-stored
 fi
-						
+
 %files
 %defattr(644,root,root,755)
 %doc ChangeLog README TODO html doc/samples
