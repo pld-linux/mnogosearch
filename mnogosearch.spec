@@ -6,7 +6,7 @@
 Summary:	Another one web indexing and searching system for a small domain or intranet
 Summary(pl):	Kolejny System indeksowania i przeszukiwania www dla ma³ych domen i intranetu
 Name:		mnogosearch
-Version:	3.2.5
+Version:	3.2.6
 Release:	1
 License:	GPL
 Group:		Networking/Utilities
@@ -26,7 +26,7 @@ BuildRequires:	openssl-devel
 %{?_with_pgsql:BuildRequires:	postgresql-devel}
 Prereq:		webserver
 %{?_with_pgsql:Prereq:		postgresql-clients}
-Requires(post):	/sbin/ldconfig
+Requires:	%{name}-lib = %{version}
 Obsoletes:	udmsearch
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
@@ -90,11 +90,20 @@ www, mnogosearch mo¿e ³±czyæ kilka serwerów www w jednym miejscu. Typ
 serwera nie ma znaczenia, dopóki pracuje on zgodnie z protoko³em HTTP
 1.0. Pakiet wspó³pracuje równie¿ z domenami wirtualnymi.
 
+%package lib
+Summary:	mnogosearch library
+Summary(pl):	Biblioteka mnogosearch
+Group:		Libraries
+Requires(post):	/sbin/ldconfig
+
+%description lib
+This package contains mnogosearch library files.
+
 %package devel
 Summary:	Include files for mnogosearch
 Summary(pl):	Pliki nag³ówkowe mnogosearch
 Group:		Development/Libraries
-Requires:	%{name} = %{version}
+Requires:	%{name}-lib = %{version}
 
 %description devel
 This package contains mnogosearch development files.
@@ -261,7 +270,6 @@ mv -f doc/*.html html
 rm -rf $RPM_BUILD_ROOT
 
 %post
-/sbin/ldconfig
 cat << EOF
 Please see docs (%{_defaultdocdir}/%{name}-%{version} or http://localhost/mnogodoc),
 then read how to setup db connection, and put line like this
@@ -269,7 +277,8 @@ then read how to setup db connection, and put line like this
 by something like "psql < %{_defaultdocdir}/%{name}-%{version}/create/pgsql/*.txt"
 EOF
 
-%postun	-p /sbin/ldconfig
+%postun	lib -p /sbin/ldconfig
+%post	lib -p /sbin/ldconfig
 
 %post pgsql
 echo "Creating database mnogosearch..."
@@ -285,7 +294,6 @@ su postgres -c "psql -U postgres template1 -c 'DROP DATABASE mnogosearch;' "
 %doc ChangeLog README TODO html doc/samples
 # instructions for database creation
 %doc db2 ibase msql mysql oracle pgsql sapdb solid sybase virtuoso
-%attr(755,root,root) %{_libdir}/lib*-*.so
 %attr(755,root,root) %{_sbindir}/*
 %attr(755,root,root) %{cgidir}/*
 %{htmldir}/mnogodoc
@@ -301,6 +309,10 @@ su postgres -c "psql -U postgres template1 -c 'DROP DATABASE mnogosearch;' "
 %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/*/*
 %config(noreplace) %attr(750,root,root) /etc/cron.daily/*
 %{_mandir}/man?/*
+
+%files lib
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_libdir}/lib*-*.so
 
 %files devel
 %defattr(644,root,root,755)
