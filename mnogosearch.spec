@@ -33,7 +33,7 @@ particular sub section of a web site. Features:
 As opposed to some WAIS-based or web-server based search engines,
 mnogsearch can span several web servers at a site. The type of these
 different web servers doesn't matter as long as they understand the
-HTTP 1.0 protocol.
+HTTP 1.0 protocol. Mnogosearch supports also virtual domains.
 
 %description -l pl
 Mnogosearch jest kompletnym systemem indeksuj±cym i przeszukuj±cym www
@@ -50,7 +50,7 @@ Zalety:
 W odró¿nieniu do innych bazuj±cych na WAIS-sie lub serwerch www
 systemach, mnogosearch mo¿e ³±czyæ kilka serwerów www w jednym
 miejscu. Typ serwera nie ma znaczenia, dopóki pracuje on zgodnie z
-protoko³em HTTP 1.0
+protoko³em HTTP 1.0. Pakiet wspó³pracuje równie¿ z domenami wirtualnymi
 
 %package devel
 Summary:	Include files and libraries for htdig
@@ -72,7 +72,7 @@ particular sub section of a web site.
 As opposed to some WAIS-based or web-server based search engines,
 mnogosearch can span several web servers at a site. The type of these
 different web servers doesn't matter as long as they understand the
-HTTP 1.0 protocol.
+HTTP 1.0 protocol. Mnogosearch supports also virtual domains.
 
 This package contains devlopment files.
 
@@ -95,7 +95,7 @@ particular sub section of a web site.
 As opposed to some WAIS-based or web-server based search engines,
 mnogosearch can span several web servers at a site. The type of these
 different web servers doesn't matter as long as they understand the
-HTTP 1.0 protocol.
+HTTP 1.0 protocol. Mnogosearch supports also virtual domains.
 
 This package contains pgsql storage support.
 
@@ -117,8 +117,8 @@ cover the search needs for a single company, campus, or even a
 particular sub section of a web site. As opposed to some WAIS-based or
 web-server based search engines, mnogosearch can span several web servers
 at a site. The type of these different web servers doesn't matter as
-long as they understand the HTTP 1.0 protocol. This package contains
-static libraries of htdig.
+long as they understand the HTTP 1.0 protocol. Mnogosearch supports also 
+virtual domains. This package contains static libraries of mnogosearch.
 
 %prep
 %setup -q
@@ -189,19 +189,22 @@ rm -rf $RPM_BUILD_ROOT
 
 %post
 # Only run this if installing for the first time
-#if [ "$1" = 1 ]; then
-#	for i in `grep '^ServerName' /etc/httpd/httpd.conf | sort -u | awk '{print $2}'`; do echo -n http://$i/; echo -n " "; done > /tmp/htdig.tmp
-#	SERVERNAMES="`cat /tmp/htdig.tmp`"
-#	[ -z "$SERVERNAMES" ] && SERVERNAMES="`hostname -f`"
-#	[ -z "$SERVERNAMES" ] && SERVERNAMES="localhost"
-#	SERVERNAME=`grep '^ServerName' /etc/httpd/httpd.conf | uniq -d | awk '{print $2}'`
-#	grep -v -e local_urls -e local_user_urls -e start_url /etc/htdig/htdig.conf > /tmp/htdig.tmp
-#	mv -f /tmp/htdig.tmp /etc/htdig/htdig.conf
-#	echo "start_url:$SERVERNAMES
-#local_urls:		$SERVERNAMES
-#local_user_urls:	http://$SERVERNAME/=/home/,/public_html/" >> /etc/htdig/htdig.conf
-#
-#fi
+if [ "$1" = 1 ]; then
+	for i in `grep '^ServerName' /etc/httpd/httpd.conf | sort -u | awk '{print $2}'`; do echo -n http://$i/; echo -n " "; done > /tmp/mnogosearch.tmp
+	if [ -x /etc/httpd/mod_vhost_alias.conf] 
+	for i in `grep '^ServerName' /etc/httpd/mod_vhost_alias.conf | sort -u | awk '{print $2}'`; do echo -n http://$i/; echo -n " "; done > /tmp/mnogosearch.tmp
+	fi
+	SERVERNAMES="`cat /tmp/mnogosearch.tmp`"
+	[ -z "$SERVERNAMES" ] && SERVERNAMES="`hostname -f`"
+	[ -z "$SERVERNAMES" ] && SERVERNAMES="localhost"
+	SERVERNAME=`grep '^ServerName' /etc/httpd/httpd.conf | uniq -d | awk '{print $2}'`
+	grep -v -e local_urls -e local_user_urls -e start_url /etc/htdig/htdig.conf > /tmp/htdig.tmp
+	mv -f /tmp/htdig.tmp /etc/htdig/htdig.conf
+	echo "start_url:	$SERVERNAMES
+	local_urls:		$SERVERNAMES
+	local_user_urls:	http://$SERVERNAME/=/home/,/public_html/" >> %{_sysconfdir}/http/%{name}/indexer.conf
+
+fi
 
 %files
 %defattr(644,root,root,755)
