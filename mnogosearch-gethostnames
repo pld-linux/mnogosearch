@@ -1,0 +1,49 @@
+#!/bin/sh
+# Script for automagic finding&using hostnames/aliases of sites which are held
+# on this server. 
+# Based on mnogosearch spec file.
+# Adapted for pld by hunter@pld.org.pl, 8/09/2001
+
+VHOSTS=/etc/httpd/mod_vhost_alias.conf
+HTTPCF=/etc/httpd/httpd.conf
+IDXRCF=/etc/httpd/mnogosearch/indexer.conf
+TMPFILE=/tmp/mnogo.tmp
+TMPFILE2=/tmp/mnogo2.tmp
+ENTRIES="index.html index.htm index.php index.php3 index.shtml default.htm"
+
+rm -f $TMPFILE $TMPFILE2
+
+# First check for local sites in this file:
+for i in `cat /etc/httpd/mnogosearch/locals`; do 
+	echo $i >> $TMPFILE
+done
+
+#Then extract from $VHOSTS file
+if [ -x $VHOSTS ]; then 
+	for i in ; do echo $i >> $TMPFILE; done
+fi
+
+#Determine localhost name
+SERVERNAME="`cat $HTTPCF| grep -v "#" |  grep ServerName| awk '{printf($2)}'`"
+[ -z "$SERVERNAME" ] && SERVERNAME="`uname -n`"
+#IF the two above fail use localhost
+[ -z "$SERVERNAME" ] && SERVERNAME="localhost"
+
+for i in `cat $TMPFILE` 'http://'$SERVERNAME; do echo "$i" >> $TMPFILE2; done
+mv $TMPFILE2 $TMPFILE
+
+cat $IDXRCF | grep -v -e Server -e URL -e "#Added by"> $TMPFILE2 
+echo "#Added by $0, on `date`" >> $TMPFILE2
+for i in `cat $TMPFILE`; do
+	echo "Server $i" >> $TMPFILE2 
+done
+
+#Get url entries for hostnames 
+for i in `cat $TMPFILE`; do 
+	for j in $ENTRIES; do
+	echo "URL $i/$j" >> $TMPFILE2;
+	done
+done
+
+mv -f $TMPFILE2 $IDXRCF
+rm -f $TMPFILE
