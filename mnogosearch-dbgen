@@ -1,8 +1,14 @@
 #!/bin/sh
 # Daily update of Mnogosearch database 
+
+[ -f /var/lock/mnogosearch-indexer.lock ] && exit 0
+touch /var/lock/mnogosearch-indexer.lock
+
 # 
 MNOGOCONF=/etc/mnogosearch/indexer.conf
 MNOGOOPT="-e -l"
 if [ -x /usr/sbin/indexer ]; then
 	/usr/sbin/indexer $MNOGOOPT $MNOGOCONF 1>&2 
 fi
+
+rm -f /var/lock/mnogosearch-indexer.lock
