@@ -33,7 +33,7 @@ BuildRequires:	automake
 %{?with_iodbc:BuildRequires:	libiodbc-devel}
 BuildRequires:	libtool
 %{?with_mysql:BuildRequires:	mysql-devel}
-%{?with_ssl:BuildRequires:	openssl-devel >= 0.9.7c}
+%{?with_ssl:BuildRequires:	openssl-devel >= 0.9.7d}
 %{?with_pgsql:BuildRequires:	postgresql-devel}
 %{?with_unixodbc:BuildRequires:	unixODBC-devel}
 BuildRequires:	zlib-devel
