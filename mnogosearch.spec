@@ -5,7 +5,7 @@
 %bcond_without	expat		# without XML support (using expat library)
 %bcond_without	ssl		# without SSL support (using OpenSSL)
 # databases
-%bcond_with	mysql		# support for MySQL
+%bcond_without	mysql		# support for MySQL
 %bcond_without	pgsql		# support for PostgreSQL
 # databases through ODBC
 %bcond_with	iodbc		# with ODBC support through iODBC
