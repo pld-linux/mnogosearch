@@ -4,8 +4,13 @@
 # Based on mnogosearch spec file.
 # Adapted for pld by hunter@pld.org.pl, 8/09/2001
 
-VHOSTS=/etc/httpd/mod_vhost_alias.conf
-HTTPCF=/etc/httpd/httpd.conf
+if [ -d /etc/httpd/httpd.conf ]; then
+    VHOSTS=/etc/httpd/httpd.conf/20_mod_vhost_alias.conf
+    HTTPCF=/etc/httpd/httpd.conf/10_httpd.conf
+else
+    VHOSTS=/etc/httpd/mod_vhost_alias.conf
+    HTTPCF=/etc/httpd/httpd.conf
+fi
 IDXRCF=/etc/mnogosearch/indexer.conf
 TMPFILE=/tmp/mnogo.tmp
 TMPFILE2=/tmp/mnogo2.tmp
