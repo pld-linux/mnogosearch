@@ -46,6 +46,7 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		_sysconfdir	/etc/%{name}
 %define		_localstatedir	/var/lib/mnogosearch
+%define		_ourdatadir	%{_datadir}/%{name}
 %define		htmldir		/home/services/httpd/html
 %define		cgidir		/home/services/httpd/cgi-bin
 
@@ -192,6 +193,7 @@ find . -type d -name CVS | xargs rm -rf
 %{__autoconf}
 %{__automake}
 %configure \
+	--datadir=%{_ourdatadir} \
 	DOCBOOKSTYLE="/usr/share/sgml/docbook/dsssl-stylesheets" \
 	--enable-syslog=LOG_LOCAL6 \
 	--enable-charset-guesser \
@@ -266,6 +268,8 @@ for f in *-dist ; do
         mv -f $f `basename $f -dist`
 done
 
+rm -rf $RPM_BUILD_ROOT%{_prefix}/doc
+
 %clean
 rm -rf $RPM_BUILD_ROOT
 
@@ -293,11 +297,10 @@ EOF
 %files
 %defattr(644,root,root,755)
 %doc ChangeLog README TODO html doc/samples
-# instructions for database creation
-%doc create/db2 create/ibase create/mssql create/mysql create/oracle create/pgsql create/sapdb create/solid create/sybase create/virtuoso
 %attr(755,root,root) %{_sbindir}/*
 %attr(755,root,root) %{_bindir}/*
 %attr(755,root,root) %{cgidir}/*
+%{_datadir}/%{name}
 %{htmldir}/mnogodoc
 %dir %{_localstatedir}
 %attr(775,root,http) %{_localstatedir}/cache
