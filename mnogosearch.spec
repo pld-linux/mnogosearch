@@ -9,10 +9,12 @@ Group(de):	Netzwerkwesen/Werkzeuge
 Group(pl):	Sieciowe/Narzêdzia
 Source0:	http://www.mnogosearch.ru/download/%{name}-%{version}.tar.gz
 #???
-#Patch0:		%{name}-glibc22.patch
+#Patch0:	%{name}-glibc22.patch
 URL:		http://www.mnogosearch
 PreReq:		webserver
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
+
+%defin		_sysconfdir	/etc/http/%{name}
 
 %description
 The mnogosearch system is a complete world wide web indexing and
@@ -20,14 +22,12 @@ searching system for a small domain or intranet. This system is not
 meant to replace the need for powerful internet-wide search systems
 like Lycos, Infoseek, Webcrawler and AltaVista. Instead it is meant to
 cover the search needs for a single company, campus, or even a
-particular sub section of a web site.
-Features:
-* mp3 tag info
-* news searching(?)
-* http: (and ftp: - via proxy) URL schemaa
-* charset guesser
-* externel parsers
-
+particular sub section of a web site. Features:
+ - mp3 tag info
+ - news searching(?)
+ - http: (and ftp: - via proxy) URL schemaa
+ - charset guesser
+ - externel parsers
 
 As opposed to some WAIS-based or web-server based search engines,
 ht://Dig can span several web servers at a site. The type of these
@@ -42,43 +42,41 @@ nadeje siê do zastosowania w pojedyñczej firmie, kampusie lub
 jakiejkolwiek stronie www.
 
 W odró¿nieniu do innych bazuj±cych na WAIS-sie lub serwerch www
-systemach, mnogosearch mo¿e ³±czyæ kilka serwerów www w jednym miejscu.
-Typ serwera nie ma znaczenia, dopóki pracuje on zgodnie z protoko³em
-HTTP 1.0
+systemach, mnogosearch mo¿e ³±czyæ kilka serwerów www w jednym
+miejscu. Typ serwera nie ma znaczenia, dopóki pracuje on zgodnie z
+protoko³em HTTP 1.0
 
 
-#%package devel
-#Summary:	Include files and libraries for htdig
-#Summary(pl):	Pliki nag³ówkowe dla htdig
-#Group:		Development/Libraries
-#Group(de):	Entwicklung/Libraries
-#Group(fr):	Development/Librairies
-#Group(pl):	Programowanie/Biblioteki
-#Requires:	%{name} = %{version}
+%package devel
+Summary:	Include files and libraries for htdig
+Summary(pl):	Pliki nag³ówkowe dla htdig
+Group:		Development/Libraries
+Group(de):	Entwicklung/Libraries
+Group(fr):	Development/Librairies
+Group(pl):	Programowanie/Biblioteki
+Requires:	%{name} = %{version}
 
-#%description devel
-#The ht://Dig system is a complete world wide web indexing and
-#searching system for a small domain or intranet. This system is not
-#meant to replace the need for powerful internet-wide search systems
-#like Lycos, Infoseek, Webcrawler and AltaVista. Instead it is meant to
-#cover the search needs for a single company, campus, or even a
-#particular sub section of a web site.
-#
-#As opposed to some WAIS-based or web-server based search engines,
-#ht://Dig can span several web servers at a site. The type of these
-#different web servers doesn't matter as long as they understand the
-#HTTP 1.0 protocol.
-#
-#This package contains devlopment files.
-#
+%description devel
+The ht://Dig system is a complete world wide web indexing and
+searching system for a small domain or intranet. This system is not
+meant to replace the need for powerful internet-wide search systems
+like Lycos, Infoseek, Webcrawler and AltaVista. Instead it is meant to
+cover the search needs for a single company, campus, or even a
+particular sub section of a web site.
+
+As opposed to some WAIS-based or web-server based search engines,
+ht://Dig can span several web servers at a site. The type of these
+different web servers doesn't matter as long as they understand the
+HTTP 1.0 protocol.
+
+This package contains devlopment files.
+
 %package pgsql
-#?
-Summary:       mnogosearch w/ pgsql storage-support 
-Summary(pl):   mnogosearch z pgsqlem jako metod± przechowywania danych
-Group:          Networking/Utilities
-Group(de):      Netzwerkwesen/Werkzeuge
-Group(pl):      Sieciowe/Narzêdzia
-# ??? Requires:      %{name} = %{version}
+Summary:	mnogosearch w/ pgsql storage-support 
+Summary(pl):	mnogosearch z pgsqlem jako metod± przechowywania danych
+Group:		Networking/Utilities
+Group(de):	Netzwerkwesen/Werkzeuge
+Group(pl):	Sieciowe/Narzêdzia
 
 %description pgsql
 The ht://Dig system is a complete world wide web indexing and
@@ -93,32 +91,28 @@ ht://Dig can span several web servers at a site. The type of these
 different web servers doesn't matter as long as they understand the
 HTTP 1.0 protocol.
 
-This package contains  pgsql storage support.
+This package contains pgsql storage support.
 
-#%package static
-#Summary:	htdig static libraries
-#Summary(pl):	Biblioteki statyczne htdig
-#Group:		Development/Libraries
-#Group(de):	Entwicklung/Libraries
-#Group(fr):	Development/Librairies
-#Group(pl):	Programowanie/Biblioteki
-#Requires:	%{name} = %{version}-devel
+%package static
+Summary:	htdig static libraries
+Summary(pl):	Biblioteki statyczne htdig
+Group:		Development/Libraries
+Group(de):	Entwicklung/Libraries
+Group(fr):	Development/Librairies
+Group(pl):	Programowanie/Biblioteki
+Requires:	%{name} = %{version}-devel
 
-#description static
-#The ht://Dig system is a complete world wide web indexing and
-#searching system for a small domain or intranet. This system is not
-#meant to replace the need for powerful internet-wide search systems
-#like Lycos, Infoseek, Webcrawler and AltaVista. Instead it is meant to
-#cover the search needs for a single company, campus, or even a
-#particular sub section of a web site.
-#
-#As opposed to some WAIS-based or web-server based search engines,
-#ht://Dig can span several web servers at a site. The type of these
-#different web servers doesn't matter as long as they understand the
-#HTTP 1.0 protocol.
-#
-#This package contains static libraries of htdig.
-#
+description static
+The ht:		//Dig system is a complete world wide web indexing and searching system for a small domain or intranet. This system
+is not meant to replace the need for powerful internet-wide search systems
+like Lycos, Infoseek, Webcrawler and AltaVista. Instead it is meant
+to cover the search needs for a single company, campus, or even a
+particular sub section of a web site.  As opposed to some WAIS-based
+or web-server based search engines, ht://Dig can span several web servers
+at a site. The type of these different web servers doesn't matter as long
+as they understand the HTTP 1.0 protocol.  This package contains
+static libraries of htdig.
+
 %prep
 %setup -q
 # I hate to do it like that:
@@ -128,17 +122,7 @@ chmod a+x configure
 #%patch -p1
 #
 %build
-#CFLAGS="%{rpmcflags}"
-#LDFLAGS="%{rpmldflags}"
-#export CFLAGS LDFLAGS
-
-./configure %{_target_platform} \
-        --prefix=%{_prefix} \
-        --exec_prefix=%{_prefix} \
-        --libexec=%{_libdir} \
-        --libdir=%{_libdir} \
-        --mandir=%{_mandir} \
-        --sysconfdir=%{_sysconfdir}/http/%{name} \
+%configure \
   	--enable-syslog      \
 	--enable-syslog=LOG_LOCAL6 \
         --with-image-dir=/home/httpd/html/%{name} \
@@ -147,14 +131,14 @@ chmod a+x configure
         --with-config-dir=%{_sysconfdir}/http/%{name} \
         --localstatedir=/var/lib/mnogosearch \
 	--with-pgsql \
-  	--enable-linux-pthreads   \
-	--enable-charset-guesser  \
-	--with-openssl	\
+  	--enable-linux-pthreads \
+	--enable-charset-guesser \
+	--with-openssl \
 	--enable-news-extension \
-	--enable-fast-tag       \
-  --enable-fast-cat       \
-  --enable-fast-site      \
-  --enable-phrase         
+	--enable-fast-tag \
+	--enable-fast-cat \
+	-enable-fast-site \
+	--enable-phrase         
   #  enable automatic Russian charset guesser :-]
   # wy uze www.linux.ru procitacli sewodnja?
 
@@ -178,27 +162,20 @@ chmod a+x configure
 
 %install
 rm -rf $RPM_BUILD_ROOT
-
-install -d /var/lib/mnogosearch
+install -d $RPM_BUILD_ROOT{/var/lib/mnogosearch,/etc/cron.daily} \
+	$RPM_BUILD_ROOT/home/httpd/html/%{name}
 
 %{__make} DESTDIR=$RPM_BUILD_ROOT install
-# \ install-strip
-# FIXME: how to tell make that:
-# /tmp/mnogosearch-3.1.16-root-hunter/usr/bin/udm-config is a bourne again shell# and it shouldn't be striped ?
-#
 
-install -d $RPM_BUILD_ROOT/etc/cron.daily
 ln -sf ../..%{_bindir}/rundig \
 	$RPM_BUILD_ROOT/etc/cron.daily/{%name}-dbgen
 
-install -d $RPM_BUILD_ROOT/home/httpd/html/%{name}/
 ln -sf ../../../..%{_defaultdocdir}/%{name}-%{version} \
         $RPM_BUILD_ROOT/home/httpd/html/%{name}/mnogodoc
 
-install -d $RPM_BUILD_ROOT/var/lib/%{name}
 install etc/search.htm-dist $RPM_BUILD_ROOT/home/httpd/html/search.html
 
-ln -sf  $RPM_BUILD_ROOT%{_prefix}/bin/search.cgi $RPM_BUILD_ROOT/home/httpd/cgi-bin/search.cgi
+ln -sf  $RPM_BUILD_ROOT%{_bindir}/search.cgi $RPM_BUILD_ROOT/home/httpd/cgi-bin/search.cgi
 
 %clean
 rm -rf $RPM_BUILD_ROOT
