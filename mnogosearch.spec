@@ -260,14 +260,15 @@ EOF
 %{htmldir}/mnogodoc
 %dir %{_localstatedir}
 %attr(775,root,http) %{_localstatedir}/cache
-%config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/*.conf
-%config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/*.freq
-%config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/*.htm
-%config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/locals
+%dir %{_sysconfdir}
+%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/*.conf
+%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/*.freq
+%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/*.htm
+%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/locals
 %dir %{_sysconfdir}/langmap
 %dir %{_sysconfdir}/stopwords
 %dir %{_sysconfdir}/synonym
-%config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/*/*
+%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/*/*
 %config(noreplace) %attr(750,root,root) /etc/cron.daily/*
 %{_mandir}/man?/*
 
