@@ -56,7 +56,7 @@ meant to replace the need for powerful internet-wide search systems
 like Lycos, Infoseek, Webcrawler and AltaVista. Instead it is meant to
 cover the search needs for a single company, campus, or even a
 particular sub section of a web site. Features:
- - mp3 tag info
+ - MP3 tag info
  - news searching(?)
  - http: (and ftp: - via proxy) URL schemaa
  - charset guesser
@@ -79,7 +79,7 @@ dla ma³ych domen oraz intranetu. System nie zosta³ opracowany jako
 wielki system typu Lycos, Infoseek WebCrawler i AltaVista. Natomiast
 nadaje siê do zastosowania w pojedynczej firmie, kampusie lub
 jakiejkolwiek stronie WWW. Zalety:
- - przeszukiwanie tagów mp3,
+ - przeszukiwanie tagów MP3,
  - niusów (Server news://localhost/pl/),
  - htdb czyli baz danych udostêpnianych przez WWW/CGI. (HTDBList SELECT
    \ concat("http://search.mnogo.ru/board/message.php?id=",id) \ FROM
