@@ -38,10 +38,10 @@ BuildRequires:	libtool
 BuildRequires:	zlib-devel
 PreReq:		webserver
 #%{?with_pgsql:PreReq:		postgresql-clients}
-Requires:	%{name}-lib = %{version}
-Obsoletes:	udmsearch
+Requires:	%{name}-lib = %{version}-%{release}
 Obsoletes:	aspseek
-Obsoletes:	%{name}-stored
+Obsoletes:	mnogosearch-stored
+Obsoletes:	udmsearch
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		_sysconfdir	/etc/%{name}
@@ -120,7 +120,7 @@ Ten pakiet zawiera pliki biblioteki mnogosearch.
 Summary:	Include files for mnogosearch
 Summary(pl):	Pliki nag³ówkowe mnogosearch
 Group:		Development/Libraries
-Requires:	%{name}-lib = %{version}
+Requires:	%{name}-lib = %{version}-%{release}
 %{?with_expat:Requires:	expat-devel}
 %{?with_iodbc:Requires:	libiodbc-devel}
 %{?with_mysql:Requires:	mysql-devel}
@@ -139,48 +139,13 @@ Pliki dla programistów u¿ywaj±cych mnogosearch.
 Summary:	mnogosearch static libraries
 Summary(pl):	Biblioteki statyczne mnogosearch
 Group:		Development/Libraries
-Requires:	%{name}-devel = %{version}
+Requires:	%{name}-devel = %{version}-%{release}
 
 %description static
 This package contains static libraries of mnogosearch.
 
 %description static -l pl
 Ten pakiet zawiera statyczne biblioteki mnogosearch.
-
-%package pgsql
-Summary:	pgsql storage-support for mnogosearch
-Summary(pl):	Obs³uga przechowywania danych w bazie PostgreSQL
-Group:		Networking/Utilities
-Requires:	%{name} = %{version}
-
-%description pgsql
-This package contains PostgreSQL storage support.
-
-Note: install will try to create tables in database mnogosearch.
-
-%description pgsql -l pl
-Ten pakiet zawiera obs³ugê baz PostgreSQL do przechowywania
-informacji.
-
-Instalacja tego pakietu spowoduje za³o¿enie tabel w bazie mnogosearch.
-
-%package stored
-Summary:	Deamon for saving gziped versions of documents
-Summary(pl):	Demon zapisuj±cy zgzipowane wersje dokumentów
-Group:		Development/Libraries
-PreReq:		rc-scripts
-Requires(post,preun):	/sbin/chkconfig
-Requires:	%{name} = %{version}
-
-%description stored
-This package contains optional part of mnogosearch stored daemon,
-which stores locally gziped versions of parsed (& indexed) html files,
-news articles, etc.
-
-%description stored -l pl
-Pakiet zawiera opcjonaln± czê¶æ mnogosearch demon stored, zajmuj±cy
-siê lokalnym przechowywaniem przetworzonych (i zindeksowanych)
-spakowanych wersji plików html, artyku³ów usenetu, itp.
 
 %prep
 %setup -q
