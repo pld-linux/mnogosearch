@@ -2,17 +2,23 @@ Summary:	A another one web indexing and searching system for a small domain or i
 Summary(pl):	Kolejny System indeksowania i przeszukiwania www dla ma³ych domen i intranetu
 Name:		mnogosearch
 Version:	3.1.17
-Release:	1
+Release:	2
 License:	GPL
 Group:		Networking/Utilities
 Group(de):	Netzwerkwesen/Werkzeuge
+Group(es):	Red/Utilitarios
 Group(pl):	Sieciowe/Narzêdzia
+Group(pt_BR):	Rede/Utilitários
 Source0:	http://www.mnogosearch.ru/Download/%{name}-%{version}.tar.gz
 Patch0:		%{name}-DESTDIR.patch
 Source1:	%{name}-gethostnames
 URL:		http://www.mnogosearch.ru/
 BuildRequires:	postgresql-devel
-PreReq:		webserver
+BuildRequires:	autoconf
+BuildRequires:	automake
+BuildRequires:	libtool
+Prereq:		webserver
+Prereq:		postgresql-clients
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		_sysconfdir	/etc/httpd/%{name}
@@ -31,9 +37,11 @@ particular sub section of a web site. Features:
  - charset guesser
  - externel parsers
  - support for ssl (https://)
- - limiting queries to one hostname by sth like this: <INPUT TYPE=HIDDEN NAME=ul VALUE=http://www.something.com/>
- - it's posilble to run indexers on several diffrent (theoreticaly 128) hosts, and gather information on one of them, reindexing proceses make no harm to avalibility of search engine. See  cachemode.txt
- 
+ - limiting queries to one hostname by sth like this:
+   <INPUT TYPE=HIDDEN NAME=ul VALUE=http://www.something.com/>
+ - it's posilble to run indexers on several diffrent (theoreticaly 128)
+   hosts, and gather information on one of them, reindexing proceses make
+   no harm to avalibility of search engine. See cachemode.txt
 
 As opposed to some WAIS-based or web-server based search engines,
 mnogsearch can span several web servers at a site. The type of these
@@ -44,68 +52,71 @@ HTTP 1.0 protocol. Mnogosearch supports also virtual domains.
 Mnogosearch jest kompletnym systemem indeksuj±cym i przeszukuj±cym www
 dla ma³ych domen oraz intranetu. System nie zosta³ opracowany jako
 wielki system typu Lycos, Infoseek WebCrawler i AltaVista. Natomiast
-nadeje siê do zastosowania w pojedyñczej firmie, kampusie lub
-jakiejkolwiek stronie www.
-Zalety:
- - przeszukiwaie tagow mp3,
+nadaje siê do zastosowania w pojedynczej firmie, kampusie lub
+jakiejkolwiek stronie www. Zalety:
+ - przeszukiwaie tagów mp3,
  - niusów (Server news://localhost/pl/),
- - htdb czyli baz danych udostêpnianych przez www/cgi. (HTDBList SELECT concat("http://search.mnogo.ru/board/message.php?id=",id) \ FROM udm.messages LIMIT 2)) 
- - zawarto¶ci serwerów ftp (rada za 2gr "Index  no" dla serwera ftp spowoduje nie indexowanie *zawarto¶ci* plików na nim siê znajduj±cych)
- - wyszykiwanie w zwyk³ych URLach http:// 
- - wsparcie dla ssl (https://)
- - wyszukiwanie w mirrorach [równie¿ lokalnych] odleg³ych sieci
- - zgadywanie zestawu znakow
- - zewnetrzne przetwarzacze dokumentow na potrzeby indekosowania
- - ograniczanie zapytañ do jednej nazwy hosta:  <INPUT TYPE=HIDDEN NAME=ul VALUE=http://www.something.com/>
+ - htdb czyli baz danych udostêpnianych przez www/cgi. (HTDBList SELECT \
+   concat("http://search.mnogo.ru/board/message.php?id=",id) \ 
+   FROM udm.messages LIMIT 2))
+ - zawarto¶ci serwerów ftp (rada za 2gr: "Index no" dla serwera ftp
+   spowoduje nie indexowanie *zawarto¶ci* plików na nim siê znajduj±cych)
+ - wyszukiwanie w zwyk³ych URL-ach http:// 
+ - wsparcie dla SSL (https://)
+ - wyszukiwanie w mirrorach (równie¿ lokalnych) odleg³ych sieci
+ - zgadywanie zestawu znaków
+ - zewnêtrzne przetwarzacze dokumentów na potrzeby indeksowania
+ - ograniczanie zapytañ do jednej nazwy hosta:
+   <INPUT TYPE=HIDDEN NAME=ul VALUE=http://www.something.com/>
  - kategoryzacja witryny (doc/categories.txt)
- - mo¿liwe jest uruchomienie kilku procesów indeksuj±cych na kilku (teoretycznie 128) hostach i trzymanie bazy na jednym z nich, reindeksacja nie powoduje wtedy niedostêpno¶ci wyszukiwarki. Przeczytaj cachemode.txt
+ - mo¿liwe jest uruchomienie kilku procesów indeksuj±cych na kilku
+   (teoretycznie 128) hostach i trzymanie bazy na jednym z nich,
+   reindeksacja nie powoduje wtedy niedostêpno¶ci wyszukiwarki.
+   Przeczytaj cachemode.txt
 
-W odró¿nieniu od innych systemów bazuj±cych na WAIS-sie lub serwerch www,
-mnogosearch mo¿e ³±czyæ kilka serwerów www w jednym miejscu. Typ serwera 
-nie ma znaczenia, dopóki pracuje on zgodnie z protoko³em HTTP 1.0. Pakiet
-wspó³pracuje równie¿ z domenami wirtualnymi.
+W odró¿nieniu od innych systemów bazuj±cych na WAIS-ie lub serwerach
+www, mnogosearch mo¿e ³±czyæ kilka serwerów www w jednym miejscu. Typ
+serwera nie ma znaczenia, dopóki pracuje on zgodnie z protoko³em HTTP
+1.0. Pakiet wspó³pracuje równie¿ z domenami wirtualnymi.
 
 %package devel
 Summary:	Include files and libraries for mnogo
 Summary(pl):	Pliki nag³ówkowe dla mnogo
 Group:		Development/Libraries
 Group(de):	Entwicklung/Libraries
+Group(es):	Desarrollo/Bibliotecas
 Group(fr):	Development/Librairies
 Group(pl):	Programowanie/Biblioteki
+Group(pt_BR):	Desenvolvimento/Bibliotecas
+Group(ru):	òÁÚÒÁÂÏÔËÁ/âÉÂÌÉÏÔÅËÉ
+Group(uk):	òÏÚÒÏÂËÁ/â¦ÂÌ¦ÏÔÅËÉ
 Requires:	%{name} = %{version}
 
 %description devel
-The mnogosearch system is a complete world wide web indexing and
-searching system for a small domain or intranet. This system is not
-meant to replace the need for powerful internet-wide search systems
-like Lycos, Infoseek, Webcrawler and AltaVista. Instead it is meant to
-cover the search needs for a single company, campus, or even a
-particular sub section of a web site.
+This package contains mnogosearch development files.
 
-As opposed to some WAIS-based or web-server based search engines,
-mnogosearch can span several web servers at a site. The type of these
-different web servers doesn't matter as long as they understand the
-HTTP 1.0 protocol. Mnogosearch supports also virtual domains.
-
-This package contains devlopment files.
+%description devel -l pl
+Pliki dla programistów mnogosearch.
 
 %package pgsql
-Summary:	mnogosearch w/ pgsql storage-support 
+Summary:	mnogosearch with pgsql storage-support 
 Summary(pl):	mnogosearch z pgsqlem jako metod± przechowywania danych
 Group:		Networking/Utilities
 Group(de):	Netzwerkwesen/Werkzeuge
+Group(es):	Red/Utilitarios
 Group(pl):	Sieciowe/Narzêdzia
+Group(pt_BR):	Rede/Utilitários
 Requires:	%{name} = %{version}
 
 %description pgsql
-
 This package contains pgsql storage support.
+
 Note: install will try to create tables in database mnogosearch.
 
-%description -l pl pgsql 
-
-Ten pakiet zawiera wsparcie dla postgresa jako sposobu przechowywania 
+%description pgsql -l pl
+Ten pakiet zawiera wsparcie dla postgresa jako sposobu przechowywania
 informacji. 
+
 Instalacja tego pakietu spowoduje za³o¿enie tabel w bazie mnogosearch.
 
 %package static
@@ -113,21 +124,19 @@ Summary:	mnogo static libraries
 Summary(pl):	Biblioteki statyczne mnogo
 Group:		Development/Libraries
 Group(de):	Entwicklung/Libraries
+Group(es):	Desarrollo/Bibliotecas
 Group(fr):	Development/Librairies
 Group(pl):	Programowanie/Biblioteki
+Group(pt_BR):	Desenvolvimento/Bibliotecas
+Group(ru):	òÁÚÒÁÂÏÔËÁ/âÉÂÌÉÏÔÅËÉ
+Group(uk):	òÏÚÒÏÂËÁ/â¦ÂÌ¦ÏÔÅËÉ
 Requires:	%{name}-devel = %{version}
 
 %description static
-The mnogosearch system is a complete world wide web indexing and
-searching system for a small domain or intranet. This system is not
-meant to replace the need for powerful internet-wide search systems
-like Lycos, Infoseek, Webcrawler and AltaVista. Instead it is meant to
-cover the search needs for a single company, campus, or even a
-particular sub section of a web site. As opposed to some WAIS-based or
-web-server based search engines, mnogosearch can span several web servers
-at a site. The type of these different web servers doesn't matter as
-long as they understand the HTTP 1.0 protocol. Mnogosearch supports also 
-virtual domains. This package contains static libraries of mnogosearch.
+This package contains static libraries of mnogosearch.
+
+%description static -l pl
+Ten pakiet zawiera statyczne biblioteki mnogosearch.
 
 %prep
 %setup -q
@@ -140,7 +149,7 @@ autoconf
 automake -a -c
 #where the hell is pgsql?
 sed -e 's/usr\/include\/pgsql/usr\/include\/postgresql/' < configure.in > aqq
-mv aqq  configure.in
+mv -f aqq  configure.in
 %configure \
 	--enable-syslog      \
 	--enable-syslog=LOG_LOCAL6 \
@@ -181,6 +190,7 @@ mv aqq  configure.in
 %{__make}
 
 %install
+rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT{/var/lib/mnogosearch,/etc/cron.daily,/home/httpd/html/%{name},%{_sysconfdir},%{_infodir}}
 
 %{__make} DESTDIR=$RPM_BUILD_ROOT install
@@ -205,8 +215,7 @@ gzip -z9 create/*
 rm -rf $RPM_BUILD_ROOT
 
 %post
-cp %{_sysconfdir}/indexer.conf-dist %{_sysconfdir}/indexer.conf
-
+cp -f %{_sysconfdir}/indexer.conf-dist %{_sysconfdir}/indexer.conf
 
 cat << EOF
 Please see docs (%{_defaultdocdir}/%{name} or http://localhost/mnogodoc), 
