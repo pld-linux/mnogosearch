@@ -1,6 +1,6 @@
-diff -urN mnogosearch-3.2.18.org/configure.in mnogosearch-3.2.18/configure.in
---- mnogosearch-3.2.18.org/configure.in	2004-06-28 02:51:35.821426328 +0200
-+++ mnogosearch-3.2.18/configure.in	2004-06-28 02:54:45.798545416 +0200
+diff -burN mnogosearch-3.2.27.orig/configure.in mnogosearch-3.2.27/configure.in
+--- mnogosearch-3.2.27.orig/configure.in	2004-12-10 20:44:44.479409592 +0100
++++ mnogosearch-3.2.27/configure.in	2004-12-10 20:46:53.112854336 +0100
 @@ -548,8 +548,12 @@
  if test "$chasen" != no; then
  	LIBS_SAVE="$LIBS"
@@ -16,22 +16,21 @@ diff -urN mnogosearch-3.2.18.org/configure.in mnogosearch-3.2.18/configure.in
  
  AC_TRY_LINK([#include <stdio.h>
  #include <chasen.h>
-@@ -578,8 +582,12 @@
- if test "$mecab" != no; then
- 	LIBS_SAVE="$LIBS"
+@@ -580,6 +584,13 @@
  	CFLAGS_SAVE="$CFLAGS"
--	LIBS="$LIBS -L/usr/local/lib -lmecab -lstdc++ -lc_r"
--	CFLAGS="$CFLAGS -I/usr/local/include"
+ 	LIBS="$LIBS -L/usr/local/lib -lmecab -lstdc++"
+ 	CFLAGS="$CFLAGS -I/usr/local/include"
 +	if test "$mecab" != "yes"; then
-+		LIBS="$LIBS -L$mecab/lib -lmecab -lstdc++ -lc_r"
-+		CFLAGS="$CFLAGS -I$mecab/include"
-+	else
++ 		LIBS="$LIBS -L$mecab/lib -lmecab -lstdc++ -lc_r"
++ 		CFLAGS="$CFLAGS -I$mecab/include"
++ 	else
 +		LIBS="$LIBS -lmecab -lstdc++ -lc_r"
 +	fi
++	
  
  AC_TRY_LINK([#include <stdio.h>
  #include <mecab.h>
-@@ -613,7 +621,7 @@
+@@ -613,7 +624,7 @@
                  else
                          SSL_INCDIR=/usr/local/ssl/include
                  fi
@@ -40,7 +39,7 @@ diff -urN mnogosearch-3.2.18.org/configure.in mnogosearch-3.2.18/configure.in
                          SSL_LIBDIR=/usr/lib
                  else
                          SSL_LIBDIR=/usr/local/ssl/lib
-@@ -711,7 +719,7 @@
+@@ -711,7 +722,7 @@
  			withval="/usr/local/mysql"
  		elif test -f /usr/include/mysql/mysql.h; then
  			MYSQL_INCDIR=/usr/include/mysql
@@ -49,7 +48,7 @@ diff -urN mnogosearch-3.2.18.org/configure.in mnogosearch-3.2.18/configure.in
  			withval="/usr"
  		elif test -f /usr/include/mysql.h; then
  			MYSQL_INCDIR=/usr/include
-@@ -746,7 +754,11 @@
+@@ -746,7 +757,11 @@
  		fi
     	fi
      MYSQL_INCLUDE="-I$MYSQL_INCDIR"
@@ -61,7 +60,7 @@ diff -urN mnogosearch-3.2.18.org/configure.in mnogosearch-3.2.18/configure.in
  
      AC_DEFINE(HAVE_MYSQL)
      AC_MSG_RESULT($withval)
-@@ -785,8 +797,8 @@
+@@ -785,8 +800,8 @@
                  test -f /usr/local/include/postgresql/libpq-fe.h && PGSQL_INCDIR=/usr/local/include/postgresql
  		test -f /usr/local/include/libpq-fe.h && PGSQL_INCDIR=/usr/local/include
  		PGSQL_LIBDIR=/usr/local/lib
@@ -72,7 +71,7 @@ diff -urN mnogosearch-3.2.18.org/configure.in mnogosearch-3.2.18/configure.in
     	else
     		PGSQL_INCDIR=$withval/include
     		test -d $withval/include/pgsql && PGSQL_INCDIR=$withval/include/pgsql
-@@ -794,7 +806,11 @@
+@@ -794,7 +809,11 @@
     		test -d $withval/lib/pgsql && PGSQL_LIBDIR=$withval/lib/pgsql
     	fi
      PGSQL_INCLUDE="-I$PGSQL_INCDIR"
@@ -84,7 +83,7 @@ diff -urN mnogosearch-3.2.18.org/configure.in mnogosearch-3.2.18/configure.in
      AC_DEFINE(HAVE_PGSQL)
      AC_MSG_RESULT(yes)
      have_db=yes
-@@ -824,7 +840,7 @@
+@@ -824,7 +843,7 @@
                            install directory, defaults to /usr/local.],
  [
  	if test "$withval" = "yes"; then
@@ -93,7 +92,7 @@ diff -urN mnogosearch-3.2.18.org/configure.in mnogosearch-3.2.18/configure.in
  	fi
  
  	if test "$withval" != "no"; then
-@@ -835,8 +851,16 @@
+@@ -835,8 +854,16 @@
      			AC_MSG_RESULT(no)
  			AC_MSG_ERROR(Invalid iODBC directory - unable to find isql.h)
  		fi
@@ -110,7 +109,7 @@ diff -urN mnogosearch-3.2.18.org/configure.in mnogosearch-3.2.18/configure.in
  		AC_DEFINE(HAVE_IODBC)
  		AC_MSG_RESULT(yes)
  		have_db=yes
-@@ -862,12 +886,12 @@
+@@ -862,12 +889,12 @@
  if test "$withval" != "no"; then
  	if test "$withval" = "yes"; then
  		if test -f /usr/include/sql.h; then
@@ -127,7 +126,7 @@ diff -urN mnogosearch-3.2.18.org/configure.in mnogosearch-3.2.18/configure.in
  			withval="/usr/local"
  		else
  			AC_MSG_RESULT(no)
-@@ -875,16 +899,14 @@
+@@ -875,16 +902,14 @@
  		fi
  	else
  		if test -f $withval/include/sql.h; then
@@ -146,7 +145,7 @@ diff -urN mnogosearch-3.2.18.org/configure.in mnogosearch-3.2.18/configure.in
  	AC_DEFINE(HAVE_UNIXODBC)
  	AC_MSG_RESULT($withval)
  	if test "x$DBTYPE" = "x" ; then
-@@ -1198,7 +1220,7 @@
+@@ -1198,7 +1223,7 @@
                            install directory, defaults to /usr/local.],
  [
  	if test "$withval" = "yes"; then
@@ -155,7 +154,7 @@ diff -urN mnogosearch-3.2.18.org/configure.in mnogosearch-3.2.18/configure.in
  	fi
  
  	if test "$withval" != "no"; then
-@@ -1209,8 +1231,16 @@
+@@ -1209,8 +1234,16 @@
      			AC_MSG_RESULT(no)
  			AC_MSG_ERROR(Invalid FreeTDS directory - unable to find ctpublic.h)
  		fi
