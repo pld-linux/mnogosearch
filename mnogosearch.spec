@@ -147,6 +147,8 @@ Instalacja tego pakietu spowoduje za³o¿enie tabel w bazie mnogosearch.
 Summary:	Deamon for saving gziped versions of documents
 Summary(pl):	Demon zapisuj±cy zgzipowane wersje dokumentów
 Group:		Development/Libraries
+PreReq:		rc-scripts
+Requires(post,preun):	/sbin/chkconfig
 Requires:	%{name} = %{version}
 
 %description stored
