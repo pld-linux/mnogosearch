@@ -138,8 +138,8 @@ Instalacja tego pakietu spowoduje za³o¿enie tabel w bazie mnogosearch.
 rm -f missing
 libtoolize --copy --force
 aclocal
-autoconf
-automake -a -c -f
+%{__autoconf}
+%{__automake}
 
 db="--with-built-in"
 
