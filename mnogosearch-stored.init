@@ -3,12 +3,12 @@
 # mnogosearch-stored	This shell script takes care of starting and stopping
 # stored (optional part of mnogosearch engine)
 #
-# description: stored is a deamon which stores gziped version of parsed 
-# documents (html pages, news atricles etc..) 
+# description:	stored is a deamon which stores gziped version of parsed 
+#		documents (html pages, news atricles etc..) 
 #
-# chkconfig:    345 86 14
-# description:  Stored is used to make documents excerpts for search results \
-#               and for storing compressed copies of indexed documents. 
+# chkconfig:	345 86 14
+# description:	Stored is used to make documents excerpts for search results \
+#		and for storing compressed copies of indexed documents. 
 
 # Source function library
 . /etc/rc.d/init.d/functions
@@ -22,9 +22,13 @@ LOGFILE=/var/log/mnogosearch-stored
 [ -f /etc/sysconfig/mnogosearch-stored ] && . /etc/sysconfig/mnogosearch-stored
 
 # Check that networking is up.
-if is_no "${NETWORKING}"; then
-	msg_Network_Down Mnogosearch-stored
-	exit 1
+if is_yes "${NETWORKING}"; then
+	if [ ! -f /var/lock/subsys/network ]; then
+		msg_network_down Mnogosearch-stored
+		exit 1
+	fi
+else
+	exit 0
 fi
 
 RETVAL=0
@@ -49,29 +53,34 @@ case "$1" in
 			touch /var/lock/subsys/mnogosearch-stored
 		else
 			deltext
-			fail	  
+			fail
 			RETVAL=1
 		fi
 	else
-		msg_Already_Running Mnogosearch-stored
+		msg_already_running Mnogosearch-stored
 		exit 1
 	fi
 	;;
   stop)
-	# Stop daemons.
-	msg_stopping Mnogosearch-stored 
-	killproc stored
-	rm -f /var/lock/subsys/mnogosearch-stored
+	if [ -f /var/lock/subsys/mnogosearch-stored ]; then
+		# Stop daemons.
+		msg_stopping Mnogosearch-stored 
+		killproc stored
+		rm -f /var/lock/subsys/mnogosearch-stored
+	else
+		msg_not_running Mnogosearch-stored
+		exit 1
+	fi
 	;;
   restart|reload)
-  	$0 stop
+	$0 stop
 	$0 start
 	;;
   status)
-  	status stored
+	status stored
 	;;
   *)
-	msg_Usage "$0 {start|stop|status|restart|reload}"
+	msg_usage "$0 {start|stop|restart|reload|status}"
 	exit 1
 esac
 
