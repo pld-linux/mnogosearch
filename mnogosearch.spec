@@ -6,23 +6,24 @@
 Summary:	Another one web indexing and searching system for a small domain or intranet
 Summary(pl):	Kolejny System indeksowania i przeszukiwania www dla ma³ych domen i intranetu
 Name:		mnogosearch
-Version:	3.2.6
-Release:	3
+Version:	3.2.8
+Release:	1
 License:	GPL v2+
 Group:		Networking/Utilities
 Source0:	http://www.mnogosearch.ru/Download/%{name}-%{version}.tar.gz
 Source1:	%{name}-gethostnames
 Source2:	%{name}-Mysql-database
 Source3:	%{name}-stored.init
+Source4:	%{name}-dbgen
 Patch0:		%{name}-DESTDIR.patch
 Patch1:		%{name}-Mysql-pld.patch
-Patch2:		%{name}-stored-dirs_1.patch
+#Patch2:		%{name}-stored-dirs_1.patch
 URL:		http://www.mnogosearch.ru/
 BuildRequires:	autoconf
 BuildRequires:	automake
 BuildRequires:	libtool
 %{?_with_mysql:BuildRequires:	mysql-devel}
-BuildRequires:	openssl-devel >= 0.9.7
+BuildRequires:	openssl-devel >= 0.9.7 
 %{?_with_pgsql:BuildRequires:	postgresql-devel}
 Prereq:		webserver
 %{?_with_pgsql:Prereq:		postgresql-clients}
@@ -162,9 +163,9 @@ spakowanych wersji plików html, artyku³ów usenetu, itp.
 
 %prep
 %setup -q
-%patch0 -p0
+%patch0 -p1
 #%patch1 -p0
-%patch2 -p0
+#%patch2 -p0
 
 %build
 find . -type d -name CVS | xargs rm -rf
@@ -225,9 +226,6 @@ install -d $RPM_BUILD_ROOT{%{_localstatedir},%{htmldir},%{cgidir},%{_sysconfdir}
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT
 
-ln -sf %{_sbindir}/indexer \
-	$RPM_BUILD_ROOT/etc/cron.daily/mnogo-dbgen
-
 ln -sf %{_defaultdocdir}/%{name}-%{version}/html \
         $RPM_BUILD_ROOT%{htmldir}/mnogodoc
 
@@ -245,6 +243,7 @@ install %{SOURCE1} \
 	$RPM_BUILD_ROOT/etc/cron.daily/mnogosearch-gethostnames
 install -d $RPM_BUILD_ROOT/usr/src/example/mnogosearch
 install %{SOURCE2} $RPM_BUILD_ROOT/usr/src/example/mnogosearch/mysql.sql
+install %{SOURCE4} $RPM_BUILD_ROOT/etc/cron.daily/mnogosearch-dbgen
 
 install -d $RPM_BUILD_ROOT/etc/rc.d/init.d/
 install %{SOURCE3} $RPM_BUILD_ROOT/etc/rc.d/init.d/mnogosearch-stored
@@ -254,8 +253,8 @@ cat > $RPM_BUILD_ROOT/usr/src/example/mnogosearch/pg-sql.sql <<EOF
 CREATE DATABASE mnogosearch;
 \connect mnogosearch
 EOF
-cat pgsql/{create,crc-multi,news-extension}.txt >> pgsql/mnogosearch-all.sql
-cat >> pgsql/mnogosearch-all.sql <<EOF
+cat create/pgsql/{create,crc-multi}.txt >> create/pgsql/mnogosearch-all.sql
+cat >> create/pgsql/mnogosearch-all.sql <<EOF
 CREATE USER "mnogosearch" WITH PASSWORD 'aqq123' NOCREATEDB NOCREATEUSER;
 GRANT ALL ON url,dict,robots,stopword,categories,next_url_id,affix TO mnogosearch;
 GRANT ALL ON ndict,server,thread,spell,next_cat_id,next_server_id,next_url_id TO mnogosearch;
@@ -292,11 +291,22 @@ echo "Mnogosearch user was created with passwd aqq123 - change it!"
 echo -n 'Dropping Database mnogosearch:' 
 su postgres -c "psql -U postgres template1 -c 'DROP DATABASE mnogosearch;' "
 
+%post stored
+/sbin/chkconfig --add mnogosearch-stored
+
+%preun stored
+if [ "$1" = "0" ]; then
+        if [ -f /var/lock/subsys/mnogosearch-stored ]; then
+		/etc/rc.d/init.d/mnogosearch-stored stop 1>&2
+	fi
+/sbin/chkconfig --del mnogosearch-stored
+fi
+						
 %files
 %defattr(644,root,root,755)
 %doc ChangeLog README TODO html doc/samples
 # instructions for database creation
-%doc db2 ibase msql mysql oracle pgsql sapdb solid sybase virtuoso
+%doc create/db2 create/ibase create/msql create/mysql create/oracle create/pgsql create/sapdb create/solid create/sybase create/virtuoso
 %attr(755,root,root) %{_sbindir}/[^s]*
 %attr(755,root,root) %{_sbindir}/s[^t]*
 %attr(755,root,root) %{cgidir}/*
@@ -335,4 +345,4 @@ su postgres -c "psql -U postgres template1 -c 'DROP DATABASE mnogosearch;' "
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_sbindir}/stored
 %{_localstatedir}/store
-/etc/rc.d/init.d/mnogosearch-stored
+%attr(754,root,root)/etc/rc.d/init.d/mnogosearch-stored
