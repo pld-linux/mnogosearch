@@ -124,7 +124,7 @@ Ten pakiet zawiera statyczne biblioteki mnogosearch.
 libtoolize --copy --force
 aclocal
 autoconf
-automake -a -c
+automake -a -c -f
 #where the hell is pgsql?
 sed -e 's%{_prefix}\/include\/pgsql%{_prefix}\/include\/postgresql/' < configure.in > aqq
 mv -f aqq  configure.in
