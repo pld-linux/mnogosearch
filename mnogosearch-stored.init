@@ -1,0 +1,75 @@
+#!/bin/sh
+#
+# mnogosearch-stored	This shell script takes care of starting and stopping
+# stored (optional part of mnogosearch engine)
+#
+# description: stored is a deamon which stores gziped version of parsed 
+# documents (html pages, news atricles etc..) 
+
+# Source function library
+. /etc/rc.d/init.d/functions
+
+# Get network config
+. /etc/sysconfig/network
+
+LOGFILE=/var/log/mnogosearch-stored
+
+# Get service config
+[ -f /etc/sysconfig/mnogosearch-stored ] && . /etc/sysconfig/mnogosearch-stored
+
+# Check that networking is up.
+if is_no "${NETWORKING}"; then
+	msg_Network_Down Mnogosearch-stored
+	exit 1
+fi
+
+RETVAL=0
+
+# See how we were called.
+case "$1" in
+  start)
+	# Check if the service is already running?
+	if [ ! -f /var/lock/subsys/mnogosearch-stored ]; then
+
+		# build aliases database
+		
+		msg_starting Mnogosearch-stored
+		busy
+		/usr/sbin/stored 2>&1 > $LOGFILE &
+		sleep 1
+
+		if ps ax | grep -v grep | grep -q stored
+		then
+			deltext
+			ok
+			touch /var/lock/subsys/mnogosearch-stored
+		else
+			deltext
+			fail	  
+			RETVAL=1
+		fi
+	else
+		msg_Already_Running Mnogosearch-stored
+		exit 1
+	fi
+	;;
+  stop)
+	# Stop daemons.
+	msg_stopping Mnogosearch-stored 
+	killproc stored
+	rm -f /var/lock/subsys/mnogosearch-stored
+	;;
+	;;
+  restart|reload)
+  	$0 stop
+	$0 start
+	;;
+  status)
+  	status stored
+	;;
+  *)
+	msg_Usage "$0 {start|stop|status|restart|reload}"
+	exit 1
+esac
+
+exit $RETVAL
