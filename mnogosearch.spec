@@ -129,6 +129,9 @@ libtoolize --copy --force
 aclocal
 autoconf
 automake -a -c
+#where the hell is pgsql?
+sed -e 's/usr\/include\/pgsql/usr\/include\/postgresql/' < configure.in > aqq
+mv aqq  configure.in
 %configure \
 	--enable-syslog      \
 	--enable-syslog=LOG_LOCAL6 \
@@ -168,30 +171,31 @@ automake -a -c
 %{__make}
 
 %install
-rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT{/var/lib/mnogosearch,/etc/cron.daily} \
 	$RPM_BUILD_ROOT/home/httpd/html/%{name}
 
 %{__make} DESTDIR=$RPM_BUILD_ROOT install
 
-ln -sf ../..%{_bindir}/rundig \
-	$RPM_BUILD_ROOT/etc/cron.daily/{%name}-dbgen
+ln -sf ../..%{_sbindir}/indexer \
+	$RPM_BUILD_ROOT/etc/cron.daily/mnogo-dbgen
 
 ln -sf ../../../..%{_defaultdocdir}/%{name}-%{version} \
         $RPM_BUILD_ROOT/home/httpd/html/%{name}/mnogodoc
 
 install etc/search.htm-dist $RPM_BUILD_ROOT/home/httpd/html/search.html
+install -d $RPM_BUILD_ROOT/home/httpd/cgi-bin
 
-ln -sf  $RPM_BUILD_ROOT%{_bindir}/search.cgi $RPM_BUILD_ROOT/home/httpd/cgi-bin/search.cgi
+install $RPM_BUILD_ROOT%{_bindir}/search.cgi $RPM_BUILD_ROOT/home/httpd/cgi-bin/search.cgi
 
 %clean
 rm -rf $RPM_BUILD_ROOT
 
 %post
 # Only run this if installing for the first time
+# Or maybe run this every day ???
 if [ "$1" = 1 ]; then
 	for i in `grep '^ServerName' /etc/httpd/httpd.conf | sort -u | awk '{print $2}'`; do echo -n http://$i/; echo -n " "; done > /tmp/mnogosearch.tmp
-	if [ -x /etc/httpd/mod_vhost_alias.conf] 
+	if [ -x /etc/httpd/mod_vhost_alias.conf]; then 
 	for i in `grep '^ServerName' /etc/httpd/mod_vhost_alias.conf | sort -u | awk '{print $2}'`; do echo -n http://$i/; echo -n " "; done > /tmp/mnogosearch.tmp
 	fi
 	SERVERNAMES="`cat /tmp/mnogosearch.tmp`"
@@ -199,11 +203,10 @@ if [ "$1" = 1 ]; then
 	[ -z "$SERVERNAMES" ] && SERVERNAMES="localhost"
 	SERVERNAME=`grep '^ServerName' /etc/httpd/httpd.conf | uniq -d | awk '{print $2}'`
 	grep -v -e local_urls -e local_user_urls -e start_url /etc/htdig/htdig.conf > /tmp/htdig.tmp
-	mv -f /tmp/htdig.tmp /etc/htdig/htdig.conf
+	mv -f /tmp/htdig.tmp /etc/httpd/htdig/htdig.conf
 	echo "start_url:	$SERVERNAMES
 	local_urls:		$SERVERNAMES
 	local_user_urls:	http://$SERVERNAME/=/home/,/public_html/" >> %{_sysconfdir}/http/%{name}/indexer.conf
-
 fi
 
 %files
@@ -213,13 +216,13 @@ fi
 # maybe user== nobody ?
 %attr (755,http,http) /home/httpd/cgi-bin/*
 %attr (755,root,root) %{_bindir}/*
-%attr (755,root,root) %{_libdir}/%{name}/*so
-%attr (755,root,root) %{_libdir}/%{name}/*la
-/home/httpd/html/%{name}/*
-%{_datadir}/%{name}/*
-%config(noreplace) %{_sysconfdir}/html/%{name}/*
+%attr (755,root,root) %{_sbindir}/*
+%attr (755,root,root) %{_libdir}/*
+#%attr (755,root,root) %{_libdir}/%{name}/*la
+%config(noreplace) /home/httpd/html/%{name}/*
+#%{_datadir}/%{name}/*
 %config(missingok noreplace) %verify(not size mtime md5) /home/httpd/html/search.html
-#%config(missingok) %{_sysconfdir}/cron.daily/htdig-dbgen
+%config(noreplace) /etc/cron.daily/mnogo-dbgen
 
 #%files devel
 #%defattr(644,root,root,755)
