@@ -31,7 +31,7 @@ particular sub section of a web site. Features:
  - externel parsers
 
 As opposed to some WAIS-based or web-server based search engines,
-ht://Dig can span several web servers at a site. The type of these
+mnogsearch can span several web servers at a site. The type of these
 different web servers doesn't matter as long as they understand the
 HTTP 1.0 protocol.
 
@@ -41,6 +41,11 @@ dla ma³ych domen oraz intranetu. System nie zosta³ opracowany jako
 wielki system typu Lycos, Infoseek WebCrawler i AltaVista. Natomiast
 nadeje siê do zastosowania w pojedyñczej firmie, kampusie lub
 jakiejkolwiek stronie www.
+Zalety:
+ - przeszukiwaie tagow mp3
+ - wyszykiwanie w URLach http (i ftp: - przez proxy)
+ - zgadywanie zestawu znakow
+ - zewnetrzne przetwarzacze dokumentow na potrzeby indekosowania
 
 W odró¿nieniu do innych bazuj±cych na WAIS-sie lub serwerch www
 systemach, mnogosearch mo¿e ³±czyæ kilka serwerów www w jednym
@@ -57,7 +62,7 @@ Group(pl):	Programowanie/Biblioteki
 Requires:	%{name} = %{version}
 
 %description devel
-The ht://Dig system is a complete world wide web indexing and
+The mnogosearch system is a complete world wide web indexing and
 searching system for a small domain or intranet. This system is not
 meant to replace the need for powerful internet-wide search systems
 like Lycos, Infoseek, Webcrawler and AltaVista. Instead it is meant to
@@ -65,7 +70,7 @@ cover the search needs for a single company, campus, or even a
 particular sub section of a web site.
 
 As opposed to some WAIS-based or web-server based search engines,
-ht://Dig can span several web servers at a site. The type of these
+mnogosearch can span several web servers at a site. The type of these
 different web servers doesn't matter as long as they understand the
 HTTP 1.0 protocol.
 
@@ -80,7 +85,7 @@ Group(pl):	Sieciowe/Narzêdzia
 Requires:	%{name} = %{version}
 
 %description pgsql
-The ht://Dig system is a complete world wide web indexing and
+The mnogosearch system is a complete world wide web indexing and
 searching system for a small domain or intranet. This system is not
 meant to replace the need for powerful internet-wide search systems
 like Lycos, Infoseek, Webcrawler and AltaVista. Instead it is meant to
@@ -88,7 +93,7 @@ cover the search needs for a single company, campus, or even a
 particular sub section of a web site.
 
 As opposed to some WAIS-based or web-server based search engines,
-ht://Dig can span several web servers at a site. The type of these
+mnogosearch can span several web servers at a site. The type of these
 different web servers doesn't matter as long as they understand the
 HTTP 1.0 protocol.
 
@@ -104,13 +109,13 @@ Group(pl):	Programowanie/Biblioteki
 Requires:	%{name}-devel = %{version}
 
 %description static
-The ht://Dig system is a complete world wide web indexing and
+The mnogosearch system is a complete world wide web indexing and
 searching system for a small domain or intranet. This system is not
 meant to replace the need for powerful internet-wide search systems
 like Lycos, Infoseek, Webcrawler and AltaVista. Instead it is meant to
 cover the search needs for a single company, campus, or even a
 particular sub section of a web site. As opposed to some WAIS-based or
-web-server based search engines, ht://Dig can span several web servers
+web-server based search engines, mnogosearch can span several web servers
 at a site. The type of these different web servers doesn't matter as
 long as they understand the HTTP 1.0 protocol. This package contains
 static libraries of htdig.
