@@ -1,13 +1,13 @@
 Summary:	A another one web indexing and searching system for a small domain or intranet
 Summary(pl):	Kolejny System indeksowania i przeszukiwania www dla ma³ych domen i intranetu
 Name:		mnogosearch
-Version:	3.1.16
+Version:	3.1.17
 Release:	1
 License:	GPL
 Group:		Networking/Utilities
 Group(de):	Netzwerkwesen/Werkzeuge
 Group(pl):	Sieciowe/Narzêdzia
-Source0:	http://www.mnogosearch.ru/download/%{name}-%{version}.tar.gz
+Source0:	http://www.mnogosearch.ru/Download/%{name}-%{version}.tar.gz
 Patch0:		%{name}-DESTDIR.patch
 URL:		http://www.mnogosearch.ru/
 BuildRequires:	postgresql-devel
