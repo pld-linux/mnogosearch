@@ -21,7 +21,7 @@ BuildRequires:	autoconf
 BuildRequires:	automake
 BuildRequires:	libtool
 %{?_with_mysql:BuildRequires:	mysql-devel}
-BuildRequires:	openssl-devel >= 0.9.7 
+BuildRequires:	openssl-devel >= 0.9.7
 %{?_with_pgsql:BuildRequires:	postgresql-devel}
 PreReq:		webserver
 %{?_with_pgsql:PreReq:		postgresql-clients}
@@ -206,8 +206,8 @@ db="--with-built-in"
 #  --with-iodbc[=DIR]      Include iODBC support.  DIR is the iODBC base
 #  --with-unixODBC[=DIR]   Include unixODBC support.  DIR is the unixODBC base
 #  --with-solid[=DIR]      Include Solid support.  DIR is the Solid base
-#  --with-openlink[=DIR]   Include OpenLink ODBC support. 
-#  --with-easysoft[=DIR]   Include EasySoft ODBC support. 
+#  --with-openlink[=DIR]   Include OpenLink ODBC support.
+#  --with-easysoft[=DIR]   Include EasySoft ODBC support.
 #  --with-sapdb[=DIR]      Include SAPDB support.  DIR is the SAPDB base
 #  --with-ibase[=DIR]      Include InterBase support.  DIR is the InterBase
 #  --with-oracle7[=DIR]    Include Oracle 7.3 support.  DIR is the Oracle
@@ -287,7 +287,7 @@ su postgres -c "psql -U postgres template1 < %{_docdir}/%{name}-%{version}/creat
 echo "Mnogosearch user was created with passwd aqq123 - change it!"
 
 %postun pgsql
-echo -n 'Dropping Database mnogosearch:' 
+echo -n 'Dropping Database mnogosearch:'
 su postgres -c "psql -U postgres template1 -c 'DROP DATABASE mnogosearch;' "
 
 %post stored
@@ -295,7 +295,7 @@ su postgres -c "psql -U postgres template1 -c 'DROP DATABASE mnogosearch;' "
 
 %preun stored
 if [ "$1" = "0" ]; then
-        if [ -f /var/lock/subsys/mnogosearch-stored ]; then
+	if [ -f /var/lock/subsys/mnogosearch-stored ]; then
 		/etc/rc.d/init.d/mnogosearch-stored stop 1>&2
 	fi
 	/sbin/chkconfig --del mnogosearch-stored
