@@ -6,7 +6,7 @@ touch /var/lock/mnogosearch-indexer.lock
 
 # 
 MNOGOCONF=/etc/mnogosearch/indexer.conf
-MNOGOOPT="-e -l"
+MNOGOOPT="-e -R -l"
 if [ -x /usr/sbin/indexer ]; then
 	nice -n 20 /usr/sbin/indexer $MNOGOOPT $MNOGOCONF 1>&2 
 fi
