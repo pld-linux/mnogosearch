@@ -16,9 +16,6 @@ Source1:	%{name}-gethostnames
 Source2:	%{name}-Mysql-database
 Source3:	%{name}-stored.init
 Source4:	%{name}-dbgen
-Patch0:		%{name}-DESTDIR.patch
-Patch1:		%{name}-Mysql-pld.patch
-#Patch2:		%{name}-stored-dirs_1.patch
 URL:		http://www.mnogosearch.ru/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -26,8 +23,8 @@ BuildRequires:	libtool
 %{?_with_mysql:BuildRequires:	mysql-devel}
 BuildRequires:	openssl-devel >= 0.9.7 
 %{?_with_pgsql:BuildRequires:	postgresql-devel}
-Prereq:		webserver
-%{?_with_pgsql:Prereq:		postgresql-clients}
+PreReq:		webserver
+%{?_with_pgsql:PreReq:		postgresql-clients}
 Requires:	%{name}-lib = %{version}
 Obsoletes:	udmsearch
 Obsoletes:	aspseek
@@ -164,9 +161,6 @@ spakowanych wersji plików html, artyku³ów usenetu, itp.
 
 %prep
 %setup -q
-#%patch0 -p1
-#%patch1 -p0
-#%patch2 -p0
 
 %build
 find . -type d -name CVS | xargs rm -rf
@@ -182,6 +176,7 @@ db="--with-built-in"
 %{?_with_pgsql: db="--with-pgsql"}
 
 %configure \
+	DOCBOOKSTYLE="/usr/share/sgml/docbook/dsssl-stylesheets" \
 	--enable-syslog      \
 	--enable-syslog=LOG_LOCAL6 \
 	--with-image-dir=%{htmldir}/%{name} \
@@ -225,7 +220,8 @@ install -d $RPM_BUILD_ROOT{%{_localstatedir},%{htmldir},%{cgidir},%{_sysconfdir}
 	$RPM_BUILD_ROOT{/etc/cron.daily,%{_infodir}}
 
 %{__make} install \
-	DESTDIR=$RPM_BUILD_ROOT
+	DESTDIR=$RPM_BUILD_ROOT \
+	doc_FILES='$(HTML_ALL)'
 
 ln -sf %{_defaultdocdir}/%{name}-%{version}/html \
         $RPM_BUILD_ROOT%{htmldir}/mnogodoc
@@ -267,7 +263,7 @@ GRANT ALL ON "qtrack" TO mnogosearch;
 EOF
 
 mkdir html
-mv -f doc/*.html html
+mv -f doc/*.{html,css} html
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -300,7 +296,7 @@ if [ "$1" = "0" ]; then
         if [ -f /var/lock/subsys/mnogosearch-stored ]; then
 		/etc/rc.d/init.d/mnogosearch-stored stop 1>&2
 	fi
-/sbin/chkconfig --del mnogosearch-stored
+	/sbin/chkconfig --del mnogosearch-stored
 fi
 						
 %files
@@ -308,8 +304,8 @@ fi
 %doc ChangeLog README TODO html doc/samples
 # instructions for database creation
 %doc create/db2 create/ibase create/msql create/mysql create/oracle create/pgsql create/sapdb create/solid create/sybase create/virtuoso
-%attr(755,root,root) %{_sbindir}/[^s]*
-%attr(755,root,root) %{_sbindir}/s[^t]*
+%attr(755,root,root) %{_sbindir}/[!s]*
+%attr(755,root,root) %{_sbindir}/s[!t]*
 %attr(755,root,root) %{cgidir}/*
 %{htmldir}/mnogodoc
 %dir %{_localstatedir}
@@ -318,6 +314,7 @@ fi
 %{_localstatedir}/tree
 %attr(775,root,http) %{_localstatedir}/cache
 %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/*.conf
+%config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/*.freq
 %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/*.htm
 %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/locals
 %dir %{_sysconfdir}/langmap
@@ -334,9 +331,10 @@ fi
 %files devel
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_bindir}/udm-config
-%{_includedir}/*
-%attr(755,root,root) %{_libdir}/libudmsearch.so
+%attr(755,root,root) %{_libdir}/libmnogosearch.so
+%attr(755,root,root) %{_libdir}/libmnogocharset.so
 %{_libdir}/lib*.la
+%{_includedir}/*
 
 %files static
 %defattr(644,root,root,755)
