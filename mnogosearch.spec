@@ -194,6 +194,8 @@ install -d $RPM_BUILD_ROOT/home/httpd/cgi-bin
 
 install $RPM_BUILD_ROOT%{_bindir}/search.cgi $RPM_BUILD_ROOT/home/httpd/cgi-bin/search.cgi
 touch $RPM_BUILD_ROOT%{_sysconfdir}/mnogosearch.hostnames
+install mnogo-addnewlocalhostnames \
+	$RPM_BUILD_ROOT/etc/cron.daily/mnogo-addnewlocalhostnames
 
 gzip -z9 create/*
 
@@ -203,23 +205,6 @@ rm -rf $RPM_BUILD_ROOT
 %post
 cp %{_sysconfdir}/indexer.conf-dist %{_sysconfdir}/indexer.conf
 
-cat > /etc/cron.daily/mnogo-addnewlocalhostnames << EOF
-	rm -f /tmp/mnogo.tmp
-	for i in `grep '^ServerName' /etc/httpd/httpd.conf | sort -u | awk '{print $2}'`; do echo -n http://$i/; echo -n " "; done > /tmp/mnogo.tmp
-	if [ -x /etc/httpd/mod_vhost_alias.conf ]; then 
-	for i in `grep '^ServerName' /etc/httpd/mod_vhost_alias.conf | sort -u | awk '{print $2}'`; do echo -n http://$i/; echo -n " "; done > /tmp/mnogo.tmp
-	fi
-	SERVERNAMES="`cat /tmp/mnogo.tmp`"
-	[ -z "$SERVERNAMES" ] && SERVERNAMES="'`hostname -f`'"
-	[ -z "$SERVERNAMES" ] && SERVERNAMES="localhost"
-	[ -z "$SERVERNAMES" ] && SERVERNAMES="`cat %{_sysconfdir}/mnogosearch.hostnames| grep -v '#' `"
-	SERVERNAME=`grep '^ServerName' /etc/httpd/httpd.conf | uniq -d | awk '{print $2}'`
-	grep -v -e local_urls -e local_user_urls -e start_url %{_sysconfdir}/indexer.conf > /tmp/mnogo.tmp
-	mv -f /tmp/mnogo.tmp %{_sysconfdir}/indexer.conf
-	echo "start_url:	$SERVERNAMES
-	local_urls:		$SERVERNAMES
-	local_user_urls:	http://$SERVERNAME/=/home/users/,/public_html/" >> %{_sysconfdir}/indexer.conf
-EOF
 
 cat << EOF
 Please see docs (%{_defaultdocdir}/%{name} or http://localhost/mnogodoc), then read how to setup db connection,
