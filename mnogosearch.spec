@@ -170,7 +170,7 @@ spakowanych wersji plików html, artyku³ów usenetu, itp.
 find . -type d -name CVS | xargs rm -rf
 rm -f missing
 %{__libtoolize}
-aclocal
+%{__aclocal}
 %{__autoconf}
 %{__automake}
 
