@@ -32,7 +32,6 @@ else
 fi
 
 RETVAL=0
-
 # See how we were called.
 case "$1" in
   start)
@@ -48,17 +47,14 @@ case "$1" in
 
 		if ps ax | grep -v grep | grep -q stored
 		then
-			deltext
 			ok
 			touch /var/lock/subsys/mnogosearch-stored
 		else
-			deltext
 			fail
 			RETVAL=1
 		fi
 	else
 		msg_already_running Mnogosearch-stored
-		exit 1
 	fi
 	;;
   stop)
@@ -69,19 +65,20 @@ case "$1" in
 		rm -f /var/lock/subsys/mnogosearch-stored
 	else
 		msg_not_running Mnogosearch-stored
-		exit 1
 	fi
 	;;
-  restart|reload)
+  restart|force-reload)
 	$0 stop
 	$0 start
+	exit $?
 	;;
   status)
 	status stored
+	exit $?
 	;;
   *)
-	msg_usage "$0 {start|stop|restart|reload|status}"
-	exit 1
+	msg_usage "$0 {start|stop|restart|force-reload|status}"
+	exit 3
 esac
 
 exit $RETVAL
