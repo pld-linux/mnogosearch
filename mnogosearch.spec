@@ -6,12 +6,12 @@
 Summary:	Another one web indexing and searching system for a small domain or intranet
 Summary(pl):	Kolejny System indeksowania i przeszukiwania www dla ma³ych domen i intranetu
 Name:		mnogosearch
-Version:	3.2.11
+Version:	3.2.14
 Release:	1
 License:	GPL v2+
 Group:		Networking/Utilities
 Source0:	http://www.mnogosearch.ru/Download/%{name}-%{version}.tar.gz
-# Source0-md5:	738866d47ecf1723c1efc445ae964477
+# Source0-md5:	4849a49f00ea7da6f808cf404be49654
 Source1:	%{name}-gethostnames
 Source2:	%{name}-Mysql-database
 Source3:	%{name}-stored.init
