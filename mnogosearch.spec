@@ -27,9 +27,9 @@ Prereq:		webserver
 Requires(post):	/sbin/ldconfig
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
-%define		_sysconfdir	/etc/httpd/%{name}
+%define		_sysconfdir	/etc/%{name}
 %define		_localstatedir	/var/lib/mnogosearch
-%define		htmldir		/home/httpd/html/%{name}
+%define		htmldir		/home/httpd/html
 %define		cgidir		/home/httpd/cgi-bin
 
 %description
@@ -194,8 +194,6 @@ ln -sf %{_sbindir}/indexer \
 ln -sf %{_defaultdocdir}/%{name}-%{version}/html \
         $RPM_BUILD_ROOT%{htmldir}/mnogodoc
 
-install etc/search.htm-dist $RPM_BUILD_ROOT%{htmldir}/search.html
-
 mv -f $RPM_BUILD_ROOT%{_bindir}/*.cgi \
 	$RPM_BUILD_ROOT/home/httpd/cgi-bin
 
@@ -263,7 +261,6 @@ su postgres -c "psql -U postgres template1 -c 'DROP DATABASE mnogosearch;' "
 %attr(755,root,root) %{_libdir}/lib*-*.so
 %attr(755,root,root) %{_sbindir}/*
 %attr(755,root,root) %{cgidir}/*
-%config(noreplace) %verify(not size mtime md5) %{htmldir}/*.html
 %{htmldir}/mnogodoc
 %dir %{_localstatedir}
 %{_localstatedir}/[rst]*
