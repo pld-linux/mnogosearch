@@ -322,10 +322,10 @@ su postgres -c "psql -U postgres template1 -c 'DROP DATABASE mnogosearch;' "
 
 %files devel
 %defattr(644,root,root,755)
-%attr (755,root,root) %{_bindir}/udm-config
+%attr(755,root,root) %{_bindir}/udm-config
 %{_includedir}/*
-%attr (755,root,root) %{_libdir}/libudmsearch.so
-%attr (755,root,root) %{_libdir}/lib*.la
+%attr(755,root,root) %{_libdir}/libudmsearch.so
+%{_libdir}/lib*.la
 
 %files static
 %defattr(644,root,root,755)
