@@ -8,13 +8,14 @@ Group:		Networking/Utilities
 Group(de):	Netzwerkwesen/Werkzeuge
 Group(pl):	Sieciowe/Narzêdzia
 Source0:	http://www.mnogosearch.ru/download/%{name}-%{version}.tar.gz
-#???
-#Patch0:	%{name}-glibc22.patch
-URL:		http://www.mnogosearch
+Patch0:		%{name}-DESTDIR.patch
+URL:		http://www.mnogosearch.ru/
+BuildRequires:	postgresql-devel
 PreReq:		webserver
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		_sysconfdir	/etc/http/%{name}
+%define		_localstatedir	/var/lib/mnogosearch
 
 %description
 The mnogosearch system is a complete world wide web indexing and
@@ -46,7 +47,6 @@ systemach, mnogosearch mo¿e ³±czyæ kilka serwerów www w jednym
 miejscu. Typ serwera nie ma znaczenia, dopóki pracuje on zgodnie z
 protoko³em HTTP 1.0
 
-
 %package devel
 Summary:	Include files and libraries for htdig
 Summary(pl):	Pliki nag³ówkowe dla htdig
@@ -77,6 +77,7 @@ Summary(pl):	mnogosearch z pgsqlem jako metod± przechowywania danych
 Group:		Networking/Utilities
 Group(de):	Netzwerkwesen/Werkzeuge
 Group(pl):	Sieciowe/Narzêdzia
+Requires:	%{name} = %{version}
 
 %description pgsql
 The ht://Dig system is a complete world wide web indexing and
@@ -100,7 +101,7 @@ Group:		Development/Libraries
 Group(de):	Entwicklung/Libraries
 Group(fr):	Development/Librairies
 Group(pl):	Programowanie/Biblioteki
-Requires:	%{name} = %{version}-devel
+Requires:	%{name}-devel = %{version}
 
 %description static
 The ht://Dig system is a complete world wide web indexing and
@@ -116,32 +117,32 @@ static libraries of htdig.
 
 %prep
 %setup -q
-# I hate to do it like that:
-sed -e 's/usr\/include\/pgsql/\/usr\/include\/postgresql/' < configure > co
-mv co configure 
-chmod a+x configure
-#%patch -p1
-#
+%patch0 -p1
+
 %build
+libtoolize --copy --force
+aclocal
+autoconf
+automake -a -c
 %configure \
-  	--enable-syslog      \
+	--enable-syslog      \
 	--enable-syslog=LOG_LOCAL6 \
-        --with-image-dir=/home/httpd/html/%{name} \
-        --with-cgi-bin-dir=/home/httpd/cgi-bin \
-        --with-search-dir=/home/httpd/html \
-        --with-config-dir=%{_sysconfdir}/http/%{name} \
-        --localstatedir=/var/lib/mnogosearch \
+	--with-image-dir=/home/httpd/html/%{name} \
+	--with-cgi-bin-dir=/home/httpd/cgi-bin \
+	--with-search-dir=/home/httpd/html \
+	--with-config-dir=%{_sysconfdir}/http/%{name} \
 	--with-pgsql \
-  	--enable-linux-pthreads \
-	--enable-charset-guesser \
 	--with-openssl \
+	--enable-linux-pthreads \
+	--enable-charset-guesser \
 	--enable-news-extension \
 	--enable-fast-tag \
 	--enable-fast-cat \
-	-enable-fast-site \
+	--enable-fast-site \
 	--enable-phrase         
-  #  enable automatic Russian charset guesser :-]
-  # wy uze www.linux.ru procitacli sewodnja?
+
+#  enable automatic Russian charset guesser :-]
+# wy uze www.linux.ru procitacli sewodnja?
 
 #  --with-msql[=DIR]       Include mSQL support.  DIR is the mSQL base
 #  --with-iodbc[=DIR]      Include iODBC support.  DIR is the iODBC base
