@@ -7,7 +7,7 @@ Summary:	Another one web indexing and searching system for a small domain or int
 Summary(pl):	Kolejny System indeksowania i przeszukiwania www dla ma³ych domen i intranetu
 Name:		mnogosearch
 Version:	3.2.6
-Release:	1
+Release:	2
 License:	GPL
 Group:		Networking/Utilities
 Source0:	http://www.mnogosearch.ru/Download/%{name}-%{version}.tar.gz
@@ -296,11 +296,14 @@ su postgres -c "psql -U postgres template1 -c 'DROP DATABASE mnogosearch;' "
 %doc ChangeLog README TODO html doc/samples
 # instructions for database creation
 %doc db2 ibase msql mysql oracle pgsql sapdb solid sybase virtuoso
-%attr(755,root,root) %{_sbindir}/*
+%attr(755,root,root) %{_sbindir}/[^s]*
+%attr(755,root,root) %{_sbindir}/s[^t]*
 %attr(755,root,root) %{cgidir}/*
 %{htmldir}/mnogodoc
 %dir %{_localstatedir}
-%{_localstatedir}/[rst]*
+%{_localstatedir}/raw
+%{_localstatedir}/splitter
+%{_localstatedir}/tree
 %attr(775,root,http) %{_localstatedir}/cache
 %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/*.conf
 %config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/*.htm
@@ -330,5 +333,5 @@ su postgres -c "psql -U postgres template1 -c 'DROP DATABASE mnogosearch;' "
 %files stored
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_sbindir}/stored
-/var/lib/mnogosearch/store
+%{_localstatedir}/store
 /etc/rc.d/init.d/mnogosearch-stored
