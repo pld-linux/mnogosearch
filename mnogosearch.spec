@@ -14,13 +14,13 @@
 Summary:	Another one web indexing and searching system for a small domain or intranet
 Summary(pl):	Kolejny system indeksowania i przeszukiwania WWW dla ma³ych domen i intranetu
 Name:		mnogosearch
-Version:	3.2.19
+Version:	3.2.24
 Release:	1
 License:	GPL v2+
 Group:		Networking/Utilities
 #Source0Download: http://www.mnogosearch.ru/download.html
 Source0:	http://www.mnogosearch.ru/Download/%{name}-%{version}.tar.gz
-# Source0-md5:	5a6b9bc48a689d333ef2ba897cb301d5
+# Source0-md5:	d805a05fd85c52411bbe2603e8411a50
 Source1:	%{name}-dbgen
 Patch0:		%{name}-acfixes.patch
 URL:		http://www.mnogosearch.ru/
@@ -56,17 +56,17 @@ meant to replace the need for powerful internet-wide search systems
 like Lycos, Infoseek, Webcrawler and AltaVista. Instead it is meant to
 cover the search needs for a single company, campus, or even a
 particular sub section of a web site. Features:
- - MP3 tag info
- - news searching(?)
- - http: (and ftp: - via proxy) URL schemaa
- - charset guesser
- - externel parsers
- - support for ssl (https://)
- - limiting queries to one hostname by sth like this: <INPUT
-   TYPE=HIDDEN NAME=ul VALUE=http://www.something.com/>
- - it's posilble to run indexers on several diffrent (theoreticaly 128)
-   hosts, and gather information on one of them, reindexing proceses make
-   no harm to avalibility of search engine. See cachemode.txt
+- MP3 tag info
+- news searching(?)
+- http: (and ftp: - via proxy) URL schemaa
+- charset guesser
+- externel parsers
+- support for ssl (https://)
+- limiting queries to one hostname by sth like this: <INPUT
+  TYPE=HIDDEN NAME=ul VALUE=http://www.something.com/>
+- it's posilble to run indexers on several diffrent (theoreticaly 128)
+  hosts, and gather information on one of them, reindexing proceses make
+  no harm to avalibility of search engine. See cachemode.txt
 
 As opposed to some WAIS-based or web-server based search engines,
 mnogsearch can span several web servers at a site. The type of these
@@ -79,25 +79,25 @@ dla ma³ych domen oraz intranetu. System nie zosta³ opracowany jako
 wielki system typu Lycos, Infoseek WebCrawler i AltaVista. Natomiast
 nadaje siê do zastosowania w pojedynczej firmie, kampusie lub
 jakiejkolwiek stronie WWW. Zalety:
- - przeszukiwanie tagów MP3,
- - niusów (Server news://localhost/pl/),
- - htdb czyli baz danych udostêpnianych przez WWW/CGI. (HTDBList SELECT
-   \ concat("http://search.mnogo.ru/board/message.php?id=",id) \ FROM
-   udm.messages LIMIT 2))
- - zawarto¶ci serwerów FTP (rada za 2gr: "Index no" dla serwera FTP
-   spowoduje nie indeksowanie *zawarto¶ci* plików na nim siê znajduj±cych)
- - wyszukiwanie w zwyk³ych URL-ach http://
- - wsparcie dla SSL (https://)
- - wyszukiwanie w mirrorach (równie¿ lokalnych) odleg³ych sieci
- - zgadywanie zestawu znaków
- - zewnêtrzne przetwarzacze dokumentów na potrzeby indeksowania
- - ograniczanie zapytañ do jednej nazwy hosta: <INPUT TYPE=HIDDEN
-   NAME=ul VALUE=http://www.something.com/>
- - kategoryzacja witryny (doc/categories.txt)
- - mo¿liwe jest uruchomienie kilku procesów indeksuj±cych na kilku
-   (teoretycznie 128) hostach i trzymanie bazy na jednym z nich,
-   reindeksacja nie powoduje wtedy niedostêpno¶ci wyszukiwarki.
-   Przeczytaj cachemode.txt
+- przeszukiwanie tagów MP3,
+- niusów (Server news://localhost/pl/),
+- htdb czyli baz danych udostêpnianych przez WWW/CGI. (HTDBList SELECT
+  \ concat("http://search.mnogo.ru/board/message.php?id=",id) \ FROM
+  udm.messages LIMIT 2))
+- zawarto¶ci serwerów FTP (rada za 2gr: "Index no" dla serwera FTP
+  spowoduje nie indeksowanie *zawarto¶ci* plików na nim siê znajduj±cych)
+- wyszukiwanie w zwyk³ych URL-ach http://
+- wsparcie dla SSL (https://)
+- wyszukiwanie w mirrorach (równie¿ lokalnych) odleg³ych sieci
+- zgadywanie zestawu znaków
+- zewnêtrzne przetwarzacze dokumentów na potrzeby indeksowania
+- ograniczanie zapytañ do jednej nazwy hosta: <INPUT TYPE=HIDDEN
+  NAME=ul VALUE=http://www.something.com/>
+- kategoryzacja witryny (doc/categories.txt)
+- mo¿liwe jest uruchomienie kilku procesów indeksuj±cych na kilku
+  (teoretycznie 128) hostach i trzymanie bazy na jednym z nich,
+  reindeksacja nie powoduje wtedy niedostêpno¶ci wyszukiwarki.
+  Przeczytaj cachemode.txt
 
 W odró¿nieniu od innych systemów bazuj±cych na WAIS-ie lub serwerach
 WWW, mnogosearch mo¿e ³±czyæ kilka serwerów WWW w jednym miejscu. Typ
@@ -213,7 +213,7 @@ install -d $RPM_BUILD_ROOT{%{_localstatedir},%{htmldir},%{cgidir},%{_sysconfdir}
 	doc_FILES='$(HTML_ALL)'
 
 ln -sf %{_defaultdocdir}/%{name}-%{version}/html \
-        $RPM_BUILD_ROOT%{htmldir}/mnogodoc
+	$RPM_BUILD_ROOT%{htmldir}/mnogodoc
 
 mv -f $RPM_BUILD_ROOT%{_bindir}/*.cgi \
 	$RPM_BUILD_ROOT%{cgidir}
@@ -227,7 +227,7 @@ cp -af doc/*.{html,css} html
 cd $RPM_BUILD_ROOT%{_sysconfdir}
 touch locals
 for f in *-dist ; do
-        mv -f $f `basename $f -dist`
+	mv -f $f `basename $f -dist`
 done
 
 rm -rf $RPM_BUILD_ROOT%{_prefix}/doc
