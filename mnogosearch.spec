@@ -11,13 +11,13 @@
 %bcond_with	iodbc		# with ODBC support through iODBC
 %bcond_with	unixodbc	# with ODBC support through unixODBC
 # databases through FreeTDS
-%bcond_with	mssql		# support for MS SQL through FreeTDS
+%bcond_without	freetds		# support for MS SQL through FreeTDS
 #
 Summary:	Another one web indexing and searching system for a small domain or intranet
 Summary(pl):	Kolejny system indeksowania i przeszukiwania WWW dla ma³ych domen i intranetu
 Name:		mnogosearch
 Version:	3.2.32
-Release:	1
+Release:	2
 License:	GPL v2+
 Group:		Networking/Utilities
 #Source0Download: http://www.mnogosearch.ru/download.html
@@ -30,7 +30,7 @@ BuildRequires:	autoconf
 BuildRequires:	automake
 %{?with_chasen:BuildRequires:	chasen-devel}
 %{?with_expat:BuildRequires:	expat-devel}
-%{?with_mssql:BuildRequires:	freetds-devel}
+%{?with_freetds:BuildRequires:	freetds-devel}
 %{?with_iodbc:BuildRequires:	libiodbc-devel}
 BuildRequires:	libtool
 %{?with_mysql:BuildRequires:	mysql-devel}
@@ -177,7 +177,7 @@ find . -type d -name CVS | xargs rm -rf
 	--with-config-dir=%{_sysconfdir}/http/%{name} \
 	%{?with_expat:--with-expat} \
 	--with-image-dir=%{htmldir}/%{name} \
-	%{?with_mssql:--with-freetds} \
+	%{?with_freetds:--with-freetds} \
 	%{?with_iodbc:--with-iodbc} \
 	%{?with_mysql:--with-mysql} \
 	%{?with_ssl:--with-openssl} \
