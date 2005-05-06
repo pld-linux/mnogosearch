@@ -82,7 +82,7 @@ dla ma³ych domen oraz intranetu. System nie zosta³ opracowany jako
 wielki system typu Lycos, Infoseek WebCrawler i AltaVista. Natomiast
 nadaje siê do zastosowania w pojedynczej firmie, kampusie lub
 jakiejkolwiek stronie WWW. Zalety:
-- przeszukiwanie tagów MP3,
+- przeszukiwanie znaczników MP3,
 - niusów (Server news://localhost/pl/),
 - htdb czyli baz danych udostêpnianych przez WWW/CGI. (HTDBList SELECT
   \ concat("http://search.mnogo.ru/board/message.php?id=",id) \ FROM
