@@ -38,9 +38,9 @@ BuildRequires:	libtool
 %{?with_pgsql:BuildRequires:	postgresql-devel}
 %{?with_unixodbc:BuildRequires:	unixODBC-devel}
 BuildRequires:	zlib-devel
-PreReq:		webserver
-#%{?with_pgsql:PreReq:		postgresql-clients}
 Requires:	%{name}-lib = %{version}-%{release}
+#%{?with_pgsql:Requires: postgresql-clients}
+Requires:	webserver
 Obsoletes:	aspseek
 Obsoletes:	mnogosearch-stored
 Obsoletes:	udmsearch
@@ -88,7 +88,8 @@ jakiejkolwiek stronie WWW. Zalety:
   \ concat("http://search.mnogo.ru/board/message.php?id=",id) \ FROM
   udm.messages LIMIT 2))
 - zawarto¶ci serwerów FTP (rada za 2gr: "Index no" dla serwera FTP
-  spowoduje nie indeksowanie *zawarto¶ci* plików na nim siê znajduj±cych)
+  spowoduje nie indeksowanie *zawarto¶ci* plików na nim siê
+  znajduj±cych)
 - wyszukiwanie w zwyk³ych URL-ach http://
 - wsparcie dla SSL (https://)
 - wyszukiwanie w mirrorach (równie¿ lokalnych) odleg³ych sieci
@@ -124,6 +125,7 @@ Summary(pl):	Pliki nag³ówkowe mnogosearch
 Group:		Development/Libraries
 Requires:	%{name}-lib = %{version}-%{release}
 %{?with_expat:Requires:	expat-devel}
+%{?with_freetds:Requires:	freetds-devel}
 %{?with_iodbc:Requires:	libiodbc-devel}
 %{?with_mysql:Requires:	mysql-devel}
 %{?with_ssl:Requires:	openssl-devel}
@@ -222,7 +224,6 @@ ln -sf %{_defaultdocdir}/%{name}-%{version}/html \
 mv -f $RPM_BUILD_ROOT%{_bindir}/*.cgi \
 	$RPM_BUILD_ROOT%{cgidir}
 
-install -d $RPM_BUILD_ROOT/usr/src/example/mnogosearch
 install %{SOURCE1} $RPM_BUILD_ROOT/etc/cron.daily/mnogosearch-dbgen
 
 mkdir html
