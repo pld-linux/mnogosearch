@@ -153,7 +153,7 @@ Ten pakiet zawiera statyczne biblioteki mnogosearch.
 
 %prep
 %setup -q
-%patch -p1
+%patch0 -p1
 
 %build
 find . -type d -name CVS | xargs rm -rf
