@@ -25,6 +25,7 @@ Source0:	http://www.mnogosearch.ru/Download/%{name}-%{version}.tar.gz
 # Source0-md5:	1706fcba5abde4bbea794379a9f672d0
 Source1:	%{name}-dbgen
 Patch0:		%{name}-acfixes.patch
+Patch1:		%{name}-as_needed-fix.patch
 URL:		http://www.mnogosearch.ru/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -154,6 +155,7 @@ Ten pakiet zawiera statyczne biblioteki mnogosearch.
 %prep
 %setup -q
 %patch0 -p1
+%patch1 -p1
 
 %build
 find . -type d -name CVS | xargs rm -rf
