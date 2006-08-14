@@ -1,0 +1,12 @@
+diff -urN aaa/mnogosearch-3.2.34/src/Makefile.am mnogosearch-3.2.34/src/Makefile.am
+--- aaa/mnogosearch-3.2.34/src/Makefile.am	2005-09-22 08:59:59.000000000 +0200
++++ mnogosearch-3.2.34/src/Makefile.am	2006-08-14 18:29:00.742010000 +0200
+@@ -38,7 +38,7 @@
+ mirror.c sqldbms.c chinese.c parsexml.c wild.c hash.c \
+ sql-mysql.c sql-oracle.c sql-ibase.c sql-pgsql.c
+ EXTRA_libmnogosearch_la_SOURCES = efence.c ef_page.c ef_print.c
+-libmnogosearch_la_LIBADD = @efOBJ@
++libmnogosearch_la_LIBADD = libmnogocharset.la @efOBJ@
+ libmnogosearch_la_LDFLAGS = -release 3.2
+ libmnogosearch_la_DEPENDENCIES = libmnogocharset.la @efOBJ@
+ 
