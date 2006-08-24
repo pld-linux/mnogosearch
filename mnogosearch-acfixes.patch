@@ -1,36 +1,6 @@
-diff -burN mnogosearch-3.2.27.orig/configure.in mnogosearch-3.2.27/configure.in
---- mnogosearch-3.2.27.orig/configure.in	2004-12-10 20:44:44.479409592 +0100
-+++ mnogosearch-3.2.27/configure.in	2004-12-10 20:46:53.112854336 +0100
-@@ -548,8 +548,12 @@
- if test "$chasen" != no; then
- 	LIBS_SAVE="$LIBS"
- 	CFLAGS_SAVE="$CFLAGS"
--	LIBS="$LIBS -L/usr/local/lib -lchasen"
--	CFLAGS="$CFLAGS -I/usr/local/include"
-+	if test "$chasen" != "yes"; then
-+		LIBS="$LIBS -L$chasen/lib -lchasen"
-+		CFLAGS="$CFLAGS -I$chasen/include"
-+	else
-+		LIBS="$LIBS -lchasen"
-+	fi
- 
- AC_TRY_LINK([#include <stdio.h>
- #include <chasen.h>
-@@ -580,6 +584,13 @@
- 	CFLAGS_SAVE="$CFLAGS"
- 	LIBS="$LIBS -L/usr/local/lib -lmecab -lstdc++"
- 	CFLAGS="$CFLAGS -I/usr/local/include"
-+	if test "$mecab" != "yes"; then
-+ 		LIBS="$LIBS -L$mecab/lib -lmecab -lstdc++ -lc_r"
-+ 		CFLAGS="$CFLAGS -I$mecab/include"
-+ 	else
-+		LIBS="$LIBS -lmecab -lstdc++ -lc_r"
-+	fi
-+	
- 
- AC_TRY_LINK([#include <stdio.h>
- #include <mecab.h>
-@@ -613,7 +624,7 @@
+--- mnogosearch-3.2.39/configure.in.orig	2006-05-28 13:48:13.000000000 +0200
++++ mnogosearch-3.2.39/configure.in	2006-08-24 15:44:28.655971000 +0200
+@@ -629,7 +629,7 @@
                  else
                          SSL_INCDIR=/usr/local/ssl/include
                  fi
@@ -39,7 +9,32 @@ diff -burN mnogosearch-3.2.27.orig/configure.in mnogosearch-3.2.27/configure.in
                          SSL_LIBDIR=/usr/lib
                  else
                          SSL_LIBDIR=/usr/local/ssl/lib
-@@ -711,7 +722,7 @@
+@@ -738,7 +738,11 @@
+ 
+   AC_MSG_RESULT($path)
+   CHASEN_INCLUDE="-I$path/include"
+-  CHASEN_LFLAGS="-L$path/lib -lstdc++ -lchasen"
++  if test "$path" = "/usr" ; then
++	CHASEN_LFLAGS="-lchasen -lstdc++"
++  else
++	CHASEN_LFLAGS="-L$path/lib -lstdc++ -lchasen"
++  fi
+   AC_DEFINE([HAVE_CHARSET_japanese], [1], [Define if you want Japanese support])
+   ADDCHARSETS="japanese"
+ ],
+@@ -771,7 +775,11 @@
+   fi
+ 
+   AC_MSG_RESULT($path)
++  if test "$path" = "/usr"; then
++  LIBS="$LIBS -lmecab -lstdc++"
++  else
+   LIBS="$LIBS -L$path/lib -lstdc++ -lmecab"
++  fi
+   CFLAGS="$CFLAGS -I$path/include"
+   AC_DEFINE([HAVE_CHARSET_japanese], [1], [Define if you want Japanese support])
+   ADDCHARSETS="japanese"
+@@ -803,7 +811,7 @@
  			withval="/usr/local/mysql"
  		elif test -f /usr/include/mysql/mysql.h; then
  			MYSQL_INCDIR=/usr/include/mysql
@@ -48,7 +43,7 @@ diff -burN mnogosearch-3.2.27.orig/configure.in mnogosearch-3.2.27/configure.in
  			withval="/usr"
  		elif test -f /usr/include/mysql.h; then
  			MYSQL_INCDIR=/usr/include
-@@ -746,7 +757,11 @@
+@@ -838,7 +846,11 @@
  		fi
     	fi
      MYSQL_INCLUDE="-I$MYSQL_INCDIR"
@@ -58,9 +53,9 @@ diff -burN mnogosearch-3.2.27.orig/configure.in mnogosearch-3.2.27/configure.in
      MYSQL_LFLAGS="-L$MYSQL_LIBDIR -lmysqlclient"
 +    fi
  
-     AC_DEFINE(HAVE_MYSQL)
+     AC_DEFINE([HAVE_MYSQL], [1], [Define if you want to use MySQL])
      AC_MSG_RESULT($withval)
-@@ -785,8 +800,8 @@
+@@ -877,8 +889,8 @@
                  test -f /usr/local/include/postgresql/libpq-fe.h && PGSQL_INCDIR=/usr/local/include/postgresql
  		test -f /usr/local/include/libpq-fe.h && PGSQL_INCDIR=/usr/local/include
  		PGSQL_LIBDIR=/usr/local/lib
@@ -71,19 +66,19 @@ diff -burN mnogosearch-3.2.27.orig/configure.in mnogosearch-3.2.27/configure.in
     	else
     		PGSQL_INCDIR=$withval/include
     		test -d $withval/include/pgsql && PGSQL_INCDIR=$withval/include/pgsql
-@@ -794,7 +809,11 @@
+@@ -886,7 +898,11 @@
     		test -d $withval/lib/pgsql && PGSQL_LIBDIR=$withval/lib/pgsql
     	fi
      PGSQL_INCLUDE="-I$PGSQL_INCDIR"
-+    if "$PGSQL_LIBDIR" = "/usr/lib"; then
-+	PGSQL_LFLAGS="-lpq"
++    if test "$PGSQL_LIBDIR" = "/usr/lib"; then
++	    PGSQL_LFLAGS="-lpq"
 +    else
      PGSQL_LFLAGS="-L$PGSQL_LIBDIR -lpq"
 +    fi
-     AC_DEFINE(HAVE_PGSQL)
+     AC_DEFINE([HAVE_PGSQL], [1], [Define if you want to use PostgreSQL])
      AC_MSG_RESULT(yes)
      have_db=yes
-@@ -824,7 +843,7 @@
+@@ -916,7 +932,7 @@
                            install directory, defaults to /usr/local.],
  [
  	if test "$withval" = "yes"; then
@@ -92,7 +87,7 @@ diff -burN mnogosearch-3.2.27.orig/configure.in mnogosearch-3.2.27/configure.in
  	fi
  
  	if test "$withval" != "no"; then
-@@ -835,8 +854,16 @@
+@@ -927,7 +943,11 @@
      			AC_MSG_RESULT(no)
  			AC_MSG_ERROR(Invalid iODBC directory - unable to find isql.h)
  		fi
@@ -101,15 +96,10 @@ diff -burN mnogosearch-3.2.27.orig/configure.in mnogosearch-3.2.27/configure.in
 +		else
  		IODBC_LFLAGS="-L$IODBC_LIBDIR -liodbc"
 +		fi
-+		if test "$IODBC_INCDIR" = "/usr/include"; then
-+			IODBC_INCLUDE=
-+		else
  		IODBC_INCLUDE="-I$IODBC_INCDIR"
-+		fi
- 		AC_DEFINE(HAVE_IODBC)
+ 		AC_DEFINE([HAVE_IODBC], [1], [Define if you want to use iODBC])
  		AC_MSG_RESULT(yes)
- 		have_db=yes
-@@ -862,12 +889,12 @@
+@@ -954,12 +974,12 @@
  if test "$withval" != "no"; then
  	if test "$withval" = "yes"; then
  		if test -f /usr/include/sql.h; then
@@ -126,7 +116,7 @@ diff -burN mnogosearch-3.2.27.orig/configure.in mnogosearch-3.2.27/configure.in
  			withval="/usr/local"
  		else
  			AC_MSG_RESULT(no)
-@@ -875,16 +902,14 @@
+@@ -967,16 +987,14 @@
  		fi
  	else
  		if test -f $withval/include/sql.h; then
@@ -142,10 +132,23 @@ diff -burN mnogosearch-3.2.27.orig/configure.in mnogosearch-3.2.27/configure.in
  	have_db=yes
 -	UNIXODBC_LFLAGS="-L$UNIXODBC_LIBDIR -lodbc"
 -	UNIXODBC_INCLUDE="-I$UNIXODBC_INCDIR"
- 	AC_DEFINE(HAVE_UNIXODBC)
+ 	AC_DEFINE([HAVE_UNIXODBC], [1], [Define if you want to use unixODBC])
  	AC_MSG_RESULT($withval)
  	if test "x$DBTYPE" = "x" ; then
-@@ -1198,7 +1223,7 @@
+@@ -1272,7 +1290,11 @@
+     			AC_MSG_RESULT(no)
+ 			AC_MSG_ERROR(Invalid Ct-Lib directory - unable to find ctpublic.h)
+ 		fi
+-		CTLIB_LFLAGS="-L$CTLIB_LIBDIR -lct -lcs -lsybtcl -lcomn -lintl"
++		if test "$CTLIB_LIBDIR" = "/usr/lib"; then
++			CTLIB_LFLAGS="-lct -lcs -lsybtcl -lcomn"
++		else
++			CTLIB_LFLAGS="-L$CTLIB_LIBDIR -lct -lcs -lsybtcl -lcomn -lintl"
++		fi
+ 		CTLIB_INCLUDE="-I$CTLIB_INCDIR"
+ 		AC_DEFINE([HAVE_CTLIB], [1], [Define if you want to use CT-LIB SyBase SQL Server])
+ 		AC_MSG_RESULT(yes)
+@@ -1299,7 +1321,7 @@
                            install directory, defaults to /usr/local.],
  [
  	if test "$withval" = "yes"; then
@@ -154,20 +157,39 @@ diff -burN mnogosearch-3.2.27.orig/configure.in mnogosearch-3.2.27/configure.in
  	fi
  
  	if test "$withval" != "no"; then
-@@ -1209,8 +1234,16 @@
+@@ -1313,7 +1335,11 @@
      			AC_MSG_RESULT(no)
  			AC_MSG_ERROR(Invalid FreeTDS directory - unable to find ctpublic.h)
  		fi
-+		if test "$CTLIB_LIBDIR" = "/usr/lib"; then
++		if test "$CTLIB_LFLAGS" = "/usr/lib"; then
 +			CTLIB_LFLAGS="-lct"
 +		else
  		CTLIB_LFLAGS="-L$CTLIB_LIBDIR -lct"
 +		fi
-+		if test "$CTLIB_INCDIR" = "/usr/include"; then
-+			CTLIB_INCLUDE=
-+		else
  		CTLIB_INCLUDE="-I$CTLIB_INCDIR"
-+		fi
- 		AC_DEFINE(HAVE_CTLIB)
+ 		AC_DEFINE([HAVE_CTLIB], [1], [Define if you want to use CT-LIB SyBase SQL Server])
  		AC_MSG_RESULT(yes)
- 		have_db=yes
+@@ -1349,7 +1375,11 @@
+ 		if test -f $d/include/sqlite.h; then
+ 			SQLITE_INCDIR=$d/include
+ 			SQLITE_LIBDIR=$d/lib
++			if test "$d" = "/usr"; then
++				SQLITE_LFLAGS="-lsqlite"
++			else
+ 			SQLITE_LFLAGS="-L$SQLITE_LIBDIR -lsqlite"
++			fi
+ 			SQLITE_INCLUDE="-I$SQLITE_INCDIR"		
+ 			path=$d
+ 			AC_MSG_RESULT($d)
+@@ -1394,7 +1424,11 @@
+ 		if test -f $d/include/sqlite3.h; then
+ 			SQLITE3_INCDIR=$d/include
+ 			SQLITE3_LIBDIR=$d/lib
++			if test "$d" = "/usr"; then
++			SQLITE3_LFLAGS="-lsqlite3"
++			else
+ 			SQLITE3_LFLAGS="-L$SQLITE3_LIBDIR -lsqlite3"
++			fi
+ 			SQLITE3_INCLUDE="-I$SQLITE3_INCDIR"
+ 			path=$d
+ 			AC_MSG_RESULT($d)
