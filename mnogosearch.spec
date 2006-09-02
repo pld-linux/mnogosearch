@@ -198,15 +198,15 @@ find . -type d -name CVS | xargs rm -rf
 #  enable automatic Russian charset guesser :-]
 # wy uze www.linux.ru procitacli sewodnja?
 
-#  --with-solid[=DIR]      Include Solid support.  DIR is the Solid base
+#  --with-solid[=DIR]	  Include Solid support.  DIR is the Solid base
 #  --with-openlink[=DIR]   Include OpenLink ODBC support.
 #  --with-easysoft[=DIR]   Include EasySoft ODBC support.
-#  --with-sapdb[=DIR]      Include SAPDB support.  DIR is the SAPDB base
-#  --with-ibase[=DIR]      Include InterBase support.  DIR is the InterBase
-#  --with-ctlib[=DIR]      Include Ct-Lib support.
-#  --with-freetds[=DIR]    Include FreeTDS Ct-Lib support.
-#  --with-oracle7[=DIR]    Include Oracle 7.3 support.  DIR is the Oracle
-#  --with-oracle8[=DIR]    Include Oracle8 support.  DIR is the Oracle
+#  --with-sapdb[=DIR]	  Include SAPDB support.  DIR is the SAPDB base
+#  --with-ibase[=DIR]	  Include InterBase support.  DIR is the InterBase
+#  --with-ctlib[=DIR]	  Include Ct-Lib support.
+#  --with-freetds[=DIR]	Include FreeTDS Ct-Lib support.
+#  --with-oracle7[=DIR]	Include Oracle 7.3 support.  DIR is the Oracle
+#  --with-oracle8[=DIR]	Include Oracle8 support.  DIR is the Oracle
 #  --with-oracle8i[=DIR]   Include Oracle8i support.  DIR is the Oracle
 #
 # FIXME: add selection of storage method, spliting into %{name}-common & %{name}-$DB_NAME
@@ -220,7 +220,7 @@ install -d $RPM_BUILD_ROOT{%{_localstatedir},%{htmldir},%{cgidir},%{_sysconfdir}
 	DESTDIR=$RPM_BUILD_ROOT \
 	doc_FILES='$(HTML_ALL)'
 
-ln -sf %{_defaultdocdir}/%{name}-%{version}/html \
+ln -sf %{_docdir}/%{name}-%{version}/html \
 	$RPM_BUILD_ROOT%{htmldir}/mnogodoc
 
 mv -f $RPM_BUILD_ROOT%{_bindir}/*.cgi \
@@ -244,7 +244,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %post
 cat << EOF
-Please see docs (%{_defaultdocdir}/%{name}-%{version}),
+Please see docs (%{_docdir}/%{name}-%{version}),
 then read how to setup db connection, and put line like this
 "pgsql://user:password@/dbname/" into %{_sysconfdir}, then setup database
 using "indexer -Ecreate" command.
