@@ -14,7 +14,7 @@
 %bcond_without	freetds		# support for MS SQL through FreeTDS
 #
 Summary:	Another one web indexing and searching system for a small domain or intranet
-Summary(pl):	Kolejny system indeksowania i przeszukiwania WWW dla ma³ych domen i intranetu
+Summary(pl.UTF-8):   Kolejny system indeksowania i przeszukiwania WWW dla maÅ‚ych domen i intranetu
 Name:		mnogosearch
 Version:	3.2.40
 Release:	3
@@ -77,52 +77,52 @@ mnogsearch can span several web servers at a site. The type of these
 different web servers doesn't matter as long as they understand the
 HTTP 1.0 protocol. Mnogosearch supports also virtual domains.
 
-%description -l pl
-Mnogosearch jest kompletnym systemem indeksuj±cym i przeszukuj±cym WWW
-dla ma³ych domen oraz intranetu. System nie zosta³ opracowany jako
+%description -l pl.UTF-8
+Mnogosearch jest kompletnym systemem indeksujÄ…cym i przeszukujÄ…cym WWW
+dla maÅ‚ych domen oraz intranetu. System nie zostaÅ‚ opracowany jako
 wielki system typu Lycos, Infoseek WebCrawler i AltaVista. Natomiast
-nadaje siê do zastosowania w pojedynczej firmie, kampusie lub
+nadaje siÄ™ do zastosowania w pojedynczej firmie, kampusie lub
 jakiejkolwiek stronie WWW. Zalety:
-- przeszukiwanie znaczników MP3,
-- niusów (Server news://localhost/pl/),
-- htdb czyli baz danych udostêpnianych przez WWW/CGI. (HTDBList SELECT
+- przeszukiwanie znacznikÃ³w MP3,
+- niusÃ³w (Server news://localhost/pl/),
+- htdb czyli baz danych udostÄ™pnianych przez WWW/CGI. (HTDBList SELECT
   \ concat("http://search.mnogo.ru/board/message.php?id=",id) \ FROM
   udm.messages LIMIT 2))
-- zawarto¶ci serwerów FTP (rada za 2gr: "Index no" dla serwera FTP
-  spowoduje nie indeksowanie *zawarto¶ci* plików na nim siê
-  znajduj±cych)
-- wyszukiwanie w zwyk³ych URL-ach http://
+- zawartoÅ›ci serwerÃ³w FTP (rada za 2gr: "Index no" dla serwera FTP
+  spowoduje nie indeksowanie *zawartoÅ›ci* plikÃ³w na nim siÄ™
+  znajdujÄ…cych)
+- wyszukiwanie w zwykÅ‚ych URL-ach http://
 - wsparcie dla SSL (https://)
-- wyszukiwanie w mirrorach (równie¿ lokalnych) odleg³ych sieci
-- zgadywanie zestawu znaków
-- zewnêtrzne przetwarzacze dokumentów na potrzeby indeksowania
-- ograniczanie zapytañ do jednej nazwy hosta: <INPUT TYPE=HIDDEN
+- wyszukiwanie w mirrorach (rÃ³wnieÅ¼ lokalnych) odlegÅ‚ych sieci
+- zgadywanie zestawu znakÃ³w
+- zewnÄ™trzne przetwarzacze dokumentÃ³w na potrzeby indeksowania
+- ograniczanie zapytaÅ„ do jednej nazwy hosta: <INPUT TYPE=HIDDEN
   NAME=ul VALUE=http://www.something.com/>
 - kategoryzacja witryny (doc/categories.txt)
-- mo¿liwe jest uruchomienie kilku procesów indeksuj±cych na kilku
+- moÅ¼liwe jest uruchomienie kilku procesÃ³w indeksujÄ…cych na kilku
   (teoretycznie 128) hostach i trzymanie bazy na jednym z nich,
-  reindeksacja nie powoduje wtedy niedostêpno¶ci wyszukiwarki.
+  reindeksacja nie powoduje wtedy niedostÄ™pnoÅ›ci wyszukiwarki.
   Przeczytaj cachemode.txt
 
-W odró¿nieniu od innych systemów bazuj±cych na WAIS-ie lub serwerach
-WWW, mnogosearch mo¿e ³±czyæ kilka serwerów WWW w jednym miejscu. Typ
-serwera nie ma znaczenia, dopóki pracuje on zgodnie z protoko³em HTTP
-1.0. Pakiet wspó³pracuje równie¿ z domenami wirtualnymi.
+W odrÃ³Å¼nieniu od innych systemÃ³w bazujÄ…cych na WAIS-ie lub serwerach
+WWW, mnogosearch moÅ¼e Å‚Ä…czyÄ‡ kilka serwerÃ³w WWW w jednym miejscu. Typ
+serwera nie ma znaczenia, dopÃ³ki pracuje on zgodnie z protokoÅ‚em HTTP
+1.0. Pakiet wspÃ³Å‚pracuje rÃ³wnieÅ¼ z domenami wirtualnymi.
 
 %package lib
 Summary:	mnogosearch library
-Summary(pl):	Biblioteka mnogosearch
+Summary(pl.UTF-8):   Biblioteka mnogosearch
 Group:		Libraries
 
 %description lib
 This package contains mnogosearch library files.
 
-%description lib -l pl
+%description lib -l pl.UTF-8
 Ten pakiet zawiera pliki biblioteki mnogosearch.
 
 %package devel
 Summary:	Include files for mnogosearch
-Summary(pl):	Pliki nag³ówkowe mnogosearch
+Summary(pl.UTF-8):   Pliki nagÅ‚Ã³wkowe mnogosearch
 Group:		Development/Libraries
 Requires:	%{name}-lib = %{version}-%{release}
 %{?with_expat:Requires:	expat-devel}
@@ -137,19 +137,19 @@ Requires:	zlib-devel
 %description devel
 This package contains mnogosearch development files.
 
-%description devel -l pl
-Pliki dla programistów u¿ywaj±cych mnogosearch.
+%description devel -l pl.UTF-8
+Pliki dla programistÃ³w uÅ¼ywajÄ…cych mnogosearch.
 
 %package static
 Summary:	mnogosearch static libraries
-Summary(pl):	Biblioteki statyczne mnogosearch
+Summary(pl.UTF-8):   Biblioteki statyczne mnogosearch
 Group:		Development/Libraries
 Requires:	%{name}-devel = %{version}-%{release}
 
 %description static
 This package contains static libraries of mnogosearch.
 
-%description static -l pl
+%description static -l pl.UTF-8
 Ten pakiet zawiera statyczne biblioteki mnogosearch.
 
 %prep
