@@ -14,7 +14,7 @@
 %bcond_without	freetds		# support for MS SQL through FreeTDS
 #
 Summary:	Another one web indexing and searching system for a small domain or intranet
-Summary(pl.UTF-8):   Kolejny system indeksowania i przeszukiwania WWW dla małych domen i intranetu
+Summary(pl.UTF-8):	Kolejny system indeksowania i przeszukiwania WWW dla małych domen i intranetu
 Name:		mnogosearch
 Version:	3.2.40
 Release:	3
@@ -111,7 +111,7 @@ serwera nie ma znaczenia, dopóki pracuje on zgodnie z protokołem HTTP
 
 %package lib
 Summary:	mnogosearch library
-Summary(pl.UTF-8):   Biblioteka mnogosearch
+Summary(pl.UTF-8):	Biblioteka mnogosearch
 Group:		Libraries
 
 %description lib
@@ -122,7 +122,7 @@ Ten pakiet zawiera pliki biblioteki mnogosearch.
 
 %package devel
 Summary:	Include files for mnogosearch
-Summary(pl.UTF-8):   Pliki nagłówkowe mnogosearch
+Summary(pl.UTF-8):	Pliki nagłówkowe mnogosearch
 Group:		Development/Libraries
 Requires:	%{name}-lib = %{version}-%{release}
 %{?with_expat:Requires:	expat-devel}
@@ -142,7 +142,7 @@ Pliki dla programistów używających mnogosearch.
 
 %package static
 Summary:	mnogosearch static libraries
-Summary(pl.UTF-8):   Biblioteki statyczne mnogosearch
+Summary(pl.UTF-8):	Biblioteki statyczne mnogosearch
 Group:		Development/Libraries
 Requires:	%{name}-devel = %{version}-%{release}
 
