@@ -1,46 +1,51 @@
 #
 # Conditional build:
-%bcond_with	chasen		# use ChaSen Japanese morphological analisys system
+%bcond_with	chasen		# use ChaSen Japanese morphological analysis system
 				# (not tested, maybe on by default?)
-%bcond_without	expat		# without XML support (using expat library)
 %bcond_without	ssl		# without SSL support (using OpenSSL)
+%bcond_with	mecab		# use mecab Japanese morphological system
 # databases
 %bcond_without	mysql		# support for MySQL
 %bcond_without	pgsql		# support for PostgreSQL
+%bcond_with	sqlite		# support for SQLite 2.x
+%bcond_without	sqlite3		# support for SQLite 3.x
+%bcond_with	ibase		# support for InterBase/Firebird
 # databases through ODBC
 %bcond_with	iodbc		# with ODBC support through iODBC
 %bcond_with	unixodbc	# with ODBC support through unixODBC
 # databases through FreeTDS
-%bcond_without	freetds		# support for MS SQL through FreeTDS
+%bcond_without	freetds		# support for Sybase/MS SQL through FreeTDS
 #
 Summary:	Another one web indexing and searching system for a small domain or intranet
 Summary(pl.UTF-8):	Kolejny system indeksowania i przeszukiwania WWW dla małych domen i intranetu
 Name:		mnogosearch
-Version:	3.2.40
-Release:	4
+Version:	3.3.7
+Release:	1
 License:	GPL v2+
 Group:		Networking/Utilities
 #Source0Download: http://www.mnogosearch.ru/download.html
 Source0:	http://www.mnogosearch.ru/Download/%{name}-%{version}.tar.gz
-# Source0-md5:	80515ca73111a1ac66fc496646beb39e
+# Source0-md5:	9780f069410963dfcb7701730e41e601
 Source1:	%{name}-dbgen
 Patch0:		%{name}-acfixes.patch
 Patch1:		%{name}-as_needed-fix.patch
 URL:		http://www.mnogosearch.ru/
+%{?with_ibase:BuildRequires:	Firebird-devel}
 BuildRequires:	autoconf
 BuildRequires:	automake
 %{?with_chasen:BuildRequires:	chasen-devel}
-%{?with_expat:BuildRequires:	expat-devel}
 %{?with_freetds:BuildRequires:	freetds-devel}
 %{?with_iodbc:BuildRequires:	libiodbc-devel}
 BuildRequires:	libtool
+%{?with_mecab:BuildRequires:	mecab-devel}
 %{?with_mysql:BuildRequires:	mysql-devel}
 %{?with_ssl:BuildRequires:	openssl-devel >= 0.9.7d}
 %{?with_pgsql:BuildRequires:	postgresql-devel}
+%{?with_sqlite:BuildRequires:	sqlite-devel}
+%{?with_sqlite3:BuildRequires:	sqlite3-devel}
 %{?with_unixodbc:BuildRequires:	unixODBC-devel}
 BuildRequires:	zlib-devel
 Requires:	%{name}-lib = %{version}-%{release}
-#%{?with_pgsql:Requires: postgresql-clients}
 Requires:	webserver
 Obsoletes:	aspseek
 Obsoletes:	mnogosearch-stored
@@ -125,12 +130,16 @@ Summary:	Include files for mnogosearch
 Summary(pl.UTF-8):	Pliki nagłówkowe mnogosearch
 Group:		Development/Libraries
 Requires:	%{name}-lib = %{version}-%{release}
-%{?with_expat:Requires:	expat-devel}
+%{?with_ibase:Requires:	Firebird-devel}
+%{?with_chasen:Requires:	chasen-devel}
 %{?with_freetds:Requires:	freetds-devel}
 %{?with_iodbc:Requires:	libiodbc-devel}
+%{?with_mecab:Requires:	mecab-devel}
 %{?with_mysql:Requires:	mysql-devel}
 %{?with_ssl:Requires:	openssl-devel}
 %{?with_pgsql:Requires:	postgresql-devel}
+%{?with_sqlite:Requires:	sqlite-devel}
+%{?with_sqlite3:Requires:	sqlite3-devel}
 %{?with_unixodbc:Requires:	unixODBC-devel}
 Requires:	zlib-devel
 
@@ -164,47 +173,33 @@ find . -type d -name CVS | xargs rm -rf
 %{__autoconf}
 %{__automake}
 %configure \
-	--datadir=%{_ourdatadir} \
 	DOCBOOKSTYLE="/usr/share/sgml/docbook/dsssl-stylesheets" \
+	--datadir=%{_ourdatadir} \
 	--enable-syslog=LOG_LOCAL6 \
-	--enable-charset-guesser \
-	%{?with_chasen:--enable-chasen} \
-	--enable-fast-cat \
-	--enable-fast-tag \
-	--enable-fast-site \
-	--enable-linux-pthreads \
-	--enable-news-extension \
-	--enable-phrase \
-	--enable-shared \
-	--with-built-in \
-	--with-cgi-bin-dir=%{cgidir} \
-	--with-config-dir=%{_sysconfdir}/http/%{name} \
-	%{?with_expat:--with-expat} \
-	--with-image-dir=%{htmldir}/%{name} \
+	%{?with_chasen:--with-chasen} \
 	%{?with_freetds:--with-freetds} \
+	%{?with_ibase:--with-ibase} \
 	%{?with_iodbc:--with-iodbc} \
+	%{?with_mecab:--with-mecab} \
 	%{?with_mysql:--with-mysql} \
 	%{?with_ssl:--with-openssl} \
 	%{?with_pgsql:--with-pgsql} \
-	--with-search-dir=%{htmldir} \
+	%{?with_sqlite:--with-sqlite} \
+	%{?with_sqlite3:--with-sqlite3} \
 	%{?with_unixodbc:--with-unixODBC} \
 	--with-zlib
 
+# --enable-mysql-fulltext-plugin ?
 # --with-readline (for SQL monitor) ?
 # --wiht-extra-charsets=big5,gb2312,gbk,japanese,euc-kr,gujarati,tscii ?
 
 %{__make}
 
-#  enable automatic Russian charset guesser :-]
-# wy uze www.linux.ru procitacli sewodnja?
-
 #  --with-solid[=DIR]	  Include Solid support.  DIR is the Solid base
 #  --with-openlink[=DIR]   Include OpenLink ODBC support.
 #  --with-easysoft[=DIR]   Include EasySoft ODBC support.
 #  --with-sapdb[=DIR]	  Include SAPDB support.  DIR is the SAPDB base
-#  --with-ibase[=DIR]	  Include InterBase support.  DIR is the InterBase
 #  --with-ctlib[=DIR]	  Include Ct-Lib support.
-#  --with-freetds[=DIR]	Include FreeTDS Ct-Lib support.
 #  --with-oracle7[=DIR]	Include Oracle 7.3 support.  DIR is the Oracle
 #  --with-oracle8[=DIR]	Include Oracle8 support.  DIR is the Oracle
 #  --with-oracle8i[=DIR]   Include Oracle8i support.  DIR is the Oracle
@@ -264,29 +259,39 @@ EOF
 %dir %{_localstatedir}
 %attr(775,root,http) %{_localstatedir}/cache
 %dir %{_sysconfdir}
-%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/*.conf
+%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/indexer.conf
+%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/langmap.conf
+%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/stopwords.conf
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/*.freq
-%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/*.htm
+%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/search.htm
+%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/node.xml
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/locals
 %dir %{_sysconfdir}/langmap
+%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/langmap/*.lm
 %dir %{_sysconfdir}/stopwords
+%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/stopwords/*.sl
 %dir %{_sysconfdir}/synonym
-%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/*/*
-%config(noreplace) %attr(750,root,root) /etc/cron.daily/*
-%{_mandir}/man?/*
+%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/synonym/*.syn
+%config(noreplace) %attr(750,root,root) /etc/cron.daily/mnogosearch-dbgen
+%{_mandir}/man1/indexer.1*
+%{_mandir}/man5/indexer.conf.5*
 
 %files lib
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_libdir}/lib*-*.so
+%attr(755,root,root) %{_libdir}/libmnogocharset-3.3.so
+%attr(755,root,root) %{_libdir}/libmnogosearch-3.3.so
 
 %files devel
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_bindir}/udm-config
-%attr(755,root,root) %{_libdir}/libmnogosearch.so
 %attr(755,root,root) %{_libdir}/libmnogocharset.so
-%{_libdir}/lib*.la
-%{_includedir}/*
+%attr(755,root,root) %{_libdir}/libmnogosearch.so
+%{_libdir}/libmnogocharset.la
+%{_libdir}/libmnogosearch.la
+%{_includedir}/udmsearch.h
+%{_includedir}/udm_*.h
 
 %files static
 %defattr(644,root,root,755)
-%{_libdir}/lib*.a
+%{_libdir}/libmnogocharset.a
+%{_libdir}/libmnogosearch.a
