@@ -1,0 +1,5 @@
+  Fixes by Łukasz Jernaś <deejay1@nsj.srem.pl>
+- updated to newer version
+- fixed stored's init script
+- fixed daily indexing
+- fixed mnogosearch-gethostnames (removed cron crap)
