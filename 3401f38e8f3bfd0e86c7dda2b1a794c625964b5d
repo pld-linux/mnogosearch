@@ -1,0 +1,3 @@
+- added DESTDIR patch,
+- added postgresql-devel to BuildRequires,
+- redefine %{_localstatedir} for %configure.
