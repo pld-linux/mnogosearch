@@ -1,0 +1,3 @@
+- added config file w/ hostnames to be indexed (not local host names)
+- moved create/{db_names}/* into %doc
+  STBR
