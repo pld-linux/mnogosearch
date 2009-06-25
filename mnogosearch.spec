@@ -1,7 +1,8 @@
+# TODO
+# - webapps instead of /home/services/httpd
 #
 # Conditional build:
-%bcond_with	chasen		# use ChaSen Japanese morphological analysis system
-				# (not tested, maybe on by default?)
+%bcond_with	chasen		# use ChaSen Japanese morphological analysis system (not tested, maybe on by default?)
 %bcond_without	ssl		# without SSL support (using OpenSSL)
 %bcond_with	mecab		# use mecab Japanese morphological system
 # databases
@@ -15,20 +16,21 @@
 %bcond_with	unixodbc	# with ODBC support through unixODBC
 # databases through FreeTDS
 %bcond_without	freetds		# support for Sybase/MS SQL through FreeTDS
-#
+
 Summary:	Another one web indexing and searching system for a small domain or intranet
 Summary(pl.UTF-8):	Kolejny system indeksowania i przeszukiwania WWW dla małych domen i intranetu
 Name:		mnogosearch
-Version:	3.3.7
+Version:	3.3.8
 Release:	1
 License:	GPL v2+
 Group:		Networking/Utilities
-#Source0Download: http://www.mnogosearch.ru/download.html
+# Source0Download: http://www.mnogosearch.ru/download.html
 Source0:	http://www.mnogosearch.ru/Download/%{name}-%{version}.tar.gz
-# Source0-md5:	9780f069410963dfcb7701730e41e601
+# Source0-md5:	4c561e3f7fb4c7328e2aa242474d7836
 Source1:	%{name}-dbgen
 Patch0:		%{name}-acfixes.patch
 Patch1:		%{name}-as_needed-fix.patch
+Patch2:		%{name}-ac.patch
 URL:		http://www.mnogosearch.ru/
 %{?with_ibase:BuildRequires:	Firebird-devel}
 BuildRequires:	autoconf
@@ -73,9 +75,9 @@ particular sub section of a web site. Features:
 - support for ssl (https://)
 - limiting queries to one hostname by sth like this: <INPUT
   TYPE=HIDDEN NAME=ul VALUE=http://www.something.com/>
-- it's posilble to run indexers on several diffrent (theoreticaly 128)
-  hosts, and gather information on one of them, reindexing proceses make
-  no harm to avalibility of search engine. See cachemode.txt
+- it's possilble to run indexers on several different (theoreticaly
+  128) hosts, and gather information on one of them, reindexing proceses
+  make no harm to avalibility of search engine. See cachemode.txt
 
 As opposed to some WAIS-based or web-server based search engines,
 mnogsearch can span several web servers at a site. The type of these
@@ -165,6 +167,7 @@ Ten pakiet zawiera statyczne biblioteki mnogosearch.
 %setup -q
 %patch0 -p1
 %patch1 -p1
+%patch2 -p1
 
 %build
 find . -type d -name CVS | xargs rm -rf
