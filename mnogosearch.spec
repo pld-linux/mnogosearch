@@ -196,7 +196,7 @@ find . -type d -name CVS | xargs rm -rf
 # --with-readline (for SQL monitor) ?
 # --wiht-extra-charsets=big5,gb2312,gbk,japanese,euc-kr,gujarati,tscii ?
 
-%{__make}
+%{__make} -j1
 
 #  --with-solid[=DIR]	  Include Solid support.  DIR is the Solid base
 #  --with-openlink[=DIR]   Include OpenLink ODBC support.
@@ -214,7 +214,7 @@ rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT{%{_localstatedir},%{htmldir},%{cgidir},%{_sysconfdir}} \
 	$RPM_BUILD_ROOT{/etc/cron.daily,%{_infodir}}
 
-%{__make} install \
+%{__make} -j1 install \
 	DESTDIR=$RPM_BUILD_ROOT \
 	doc_FILES='$(HTML_ALL)'
 
