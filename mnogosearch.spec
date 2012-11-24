@@ -20,17 +20,16 @@
 Summary:	Another one web indexing and searching system for a small domain or intranet
 Summary(pl.UTF-8):	Kolejny system indeksowania i przeszukiwania WWW dla małych domen i intranetu
 Name:		mnogosearch
-Version:	3.3.9
-Release:	3
+Version:	3.3.12
+Release:	1
 License:	GPL v2+
 Group:		Networking/Utilities
 # Source0Download: http://www.mnogosearch.org/download.html
 Source0:	http://www.mnogosearch.org/Download/%{name}-%{version}.tar.gz
-# Source0-md5:	18d3e6c6cca3f816d05d04bd3943ed6a
+# Source0-md5:	e4eb0b14c1a515991290c59f5eed8f9a
 Source1:	%{name}-dbgen
 Patch0:		%{name}-acfixes.patch
 Patch1:		%{name}-as_needed-fix.patch
-Patch2:		%{name}-ac.patch
 URL:		http://www.mnogosearch.org/
 %{?with_ibase:BuildRequires:	Firebird-devel}
 BuildRequires:	autoconf
@@ -167,7 +166,6 @@ Ten pakiet zawiera statyczne biblioteki mnogosearch.
 %setup -q
 %patch0 -p1
 %patch1 -p1
-%patch2 -p1
 
 %build
 find . -type d -name CVS | xargs rm -rf
@@ -254,13 +252,13 @@ EOF
 %files
 %defattr(644,root,root,755)
 %doc ChangeLog README TODO html doc/samples
-%attr(755,root,root) %{_sbindir}/*
-%attr(755,root,root) %{_bindir}/*
-%attr(755,root,root) %{cgidir}/*
+%attr(755,root,root) %{_sbindir}/indexer
+%attr(755,root,root) %{_bindir}/mconv
+%attr(755,root,root) %{_bindir}/mguesser
+%attr(755,root,root) %{cgidir}/search.cgi
 %{_datadir}/%{name}
 %{htmldir}/mnogodoc
-%dir %{_localstatedir}
-%attr(775,root,http) %{_localstatedir}/cache
+%attr(775,root,http) %dir %{_localstatedir}
 %dir %{_sysconfdir}
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/indexer.conf
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/langmap.conf

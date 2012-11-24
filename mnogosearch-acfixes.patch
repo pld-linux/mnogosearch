@@ -1,6 +1,6 @@
---- mnogosearch-3.3.7/configure.in.orig	2007-12-07 11:30:37.000000000 +0100
-+++ mnogosearch-3.3.7/configure.in	2008-09-17 23:32:30.415625393 +0200
-@@ -687,7 +687,7 @@
+--- mnogosearch-3.3.12/configure.in.orig	2011-12-13 16:16:44.000000000 +0100
++++ mnogosearch-3.3.12/configure.in	2012-11-24 14:36:06.723894127 +0100
+@@ -746,7 +746,7 @@
                  else
                          SSL_INCDIR=/usr/local/ssl/include
                  fi
@@ -9,7 +9,7 @@
                          SSL_LIBDIR=/usr/lib
                  else
                          SSL_LIBDIR=/usr/local/ssl/lib
-@@ -834,7 +834,11 @@
+@@ -893,7 +893,11 @@
  
    AC_MSG_RESULT($path)
    CHASEN_INCLUDE="-I$path/include"
@@ -22,7 +22,7 @@
    AC_DEFINE([HAVE_CHARSET_japanese], [1], [Define if you want Japanese support])
    ADDCHARSETS="japanese"
  ],
-@@ -867,7 +871,11 @@
+@@ -926,7 +930,11 @@
    fi
  
    AC_MSG_RESULT($path)
@@ -34,18 +34,18 @@
    CFLAGS="$CFLAGS -I$path/include"
    AC_DEFINE([HAVE_CHARSET_japanese], [1], [Define if you want Japanese support])
    ADDCHARSETS="japanese"
-@@ -899,7 +907,7 @@
- 			withval="/usr/local/mysql"
- 		elif test -f /usr/include/mysql/mysql.h; then
+@@ -954,7 +962,7 @@
+   	if test "$withval" = "yes"; then
+ 		if test -f /usr/include/mysql/mysql.h; then
  			MYSQL_INCDIR=/usr/include/mysql
 -			MYSQL_LIBDIR=/usr/lib/mysql
 +			MYSQL_LIBDIR=/usr/lib
  			withval="/usr"
- 		elif test -f /usr/local/mysql/include/mysql.h; then
- 			MYSQL_INCDIR=/usr/local/mysql/include/
-@@ -938,7 +946,11 @@
- 		fi
-    	fi
+ 		elif test -f /usr/local/mysql/include/mysql/mysql.h; then
+ 			MYSQL_INCDIR=/usr/local/mysql/include/mysql
+@@ -1000,7 +1008,11 @@
+ 	MYSQL_LIBDIR=$withval/lib64/mysql
+     fi
      MYSQL_INCLUDE="-I$MYSQL_INCDIR"
 +    if test "$MYSQL_LIBDIR" = "/usr/lib" ; then
 +	MYSQL_LFLAGS="-lmysqlclient"
@@ -55,7 +55,7 @@
  
      AC_DEFINE([HAVE_MYSQL], [1], [Define if you want to use MySQL])
      AC_MSG_RESULT($withval)
-@@ -977,8 +989,8 @@
+@@ -1039,8 +1051,8 @@
                  test -f /usr/local/include/postgresql/libpq-fe.h && PGSQL_INCDIR=/usr/local/include/postgresql
  		test -f /usr/local/include/libpq-fe.h && PGSQL_INCDIR=/usr/local/include
  		PGSQL_LIBDIR=/usr/local/lib
@@ -66,7 +66,7 @@
     	else
     		PGSQL_INCDIR=$withval/include
     		test -d $withval/include/pgsql && PGSQL_INCDIR=$withval/include/pgsql
-@@ -986,7 +998,11 @@
+@@ -1048,7 +1060,11 @@
     		test -d $withval/lib/pgsql && PGSQL_LIBDIR=$withval/lib/pgsql
     	fi
      PGSQL_INCLUDE="-I$PGSQL_INCDIR"
@@ -78,7 +78,7 @@
      AC_DEFINE([HAVE_PGSQL], [1], [Define if you want to use PostgreSQL])
      AC_MSG_RESULT(yes)
      have_db=yes
-@@ -1016,7 +1032,7 @@
+@@ -1078,7 +1094,7 @@
                            install directory, defaults to /usr/local.],
  [
  	if test "$withval" = "yes"; then
@@ -87,7 +87,7 @@
  	fi
  
  	if test "$withval" != "no"; then
-@@ -1027,7 +1043,11 @@
+@@ -1089,7 +1105,11 @@
      			AC_MSG_RESULT(no)
  			AC_MSG_ERROR(Invalid iODBC directory - unable to find isql.h)
  		fi
@@ -99,7 +99,7 @@
  		IODBC_INCLUDE="-I$IODBC_INCDIR"
  		AC_DEFINE([HAVE_IODBC], [1], [Define if you want to use iODBC])
  		AC_MSG_RESULT(yes)
-@@ -1054,12 +1074,12 @@
+@@ -1116,12 +1136,12 @@
  if test "$withval" != "no"; then
  	if test "$withval" = "yes"; then
  		if test -f /usr/include/sql.h; then
@@ -116,7 +116,7 @@
  			withval="/usr/local"
  		else
  			AC_MSG_RESULT(no)
-@@ -1067,16 +1087,14 @@
+@@ -1129,16 +1149,14 @@
  		fi
  	else
  		if test -f $withval/include/sql.h; then
@@ -135,25 +135,7 @@
  	AC_DEFINE([HAVE_UNIXODBC], [1], [Define if you want to use unixODBC])
  	AC_MSG_RESULT($withval)
  	if test "x$DBTYPE" = "x" ; then
-@@ -1378,9 +1396,17 @@
- 			AC_MSG_ERROR(Invalid Ct-Lib directory - unable to find ctpublic.h)
- 		fi
- 		if test -f $withval/lib/libsybct.a; then
-+			if test "$CTLIB_LIBDIR" = "/usr/lib"; then
-+				CTLIB_LFLAGS="-lsybct -lsybcs -lsybtcl -lsybcomn -lsybintl -lsybunic"
-+			else
- 			CTLIB_LFLAGS="-L$CTLIB_LIBDIR -lsybct -lsybcs -lsybtcl -lsybcomn -lsybintl -lsybunic"
-+			fi
- 		else
-+			if test "$CTLIB_LIBDIR" = "/usr/lib"; then
-+				CTLIB_LFLAGS="-lct -lcs -lsybtcl -lcomn -lintl"
-+			else
- 			CTLIB_LFLAGS="-L$CTLIB_LIBDIR -lct -lcs -lsybtcl -lcomn -lintl"
-+			fi
- 		fi
- 		CTLIB_INCLUDE="-I$CTLIB_INCDIR"
- 		AC_DEFINE([HAVE_CTLIB], [1], [Define if you want to use CT-LIB SyBase SQL Server])
-@@ -1408,7 +1434,7 @@
+@@ -1472,7 +1490,7 @@
                            install directory, defaults to /usr/local.],
  [
  	if test "$withval" = "yes"; then
@@ -162,7 +144,7 @@
  	fi
  
  	if test "$withval" != "no"; then
-@@ -1422,7 +1448,11 @@
+@@ -1486,7 +1504,11 @@
      			AC_MSG_RESULT(no)
  			AC_MSG_ERROR(Invalid FreeTDS directory - unable to find ctpublic.h)
  		fi
@@ -174,7 +156,7 @@
  		CTLIB_INCLUDE="-I$CTLIB_INCDIR"
  		AC_DEFINE([HAVE_CTLIB], [1], [Define if you want to use CT-LIB SyBase SQL Server])
  		AC_MSG_RESULT(yes)
-@@ -1458,7 +1488,11 @@
+@@ -1522,7 +1544,11 @@
  		if test -f $d/include/sqlite.h; then
  			SQLITE_INCDIR=$d/include
  			SQLITE_LIBDIR=$d/lib
@@ -186,7 +168,7 @@
  			SQLITE_INCLUDE="-I$SQLITE_INCDIR"		
  			path=$d
  			AC_MSG_RESULT($d)
-@@ -1503,7 +1537,11 @@
+@@ -1573,7 +1599,11 @@
  		if test -f $d/include/sqlite3.h; then
  			SQLITE3_INCDIR=$d/include
  			SQLITE3_LIBDIR=$d/lib
