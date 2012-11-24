@@ -1,5 +1,4 @@
-# TODO
-# - webapps instead of /home/services/httpd
+# TODO: webapps?
 #
 # Conditional build:
 %bcond_with	chasen		# use ChaSen Japanese morphological analysis system (not tested, maybe on by default?)
@@ -55,9 +54,7 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		_sysconfdir	/etc/%{name}
 %define		_localstatedir	/var/lib/mnogosearch
-%define		_ourdatadir	%{_datadir}/%{name}
-%define		htmldir		/home/services/httpd/html
-%define		cgidir		/home/services/httpd/cgi-bin
+%define		cgidir		/usr/lib/cgi-bin
 
 %description
 The mnogosearch system is a complete world wide web indexing and
@@ -175,7 +172,7 @@ find . -type d -name CVS | xargs rm -rf
 %{__automake}
 %configure \
 	DOCBOOKSTYLE="/usr/share/sgml/docbook/dsssl-stylesheets" \
-	--datadir=%{_ourdatadir} \
+	--datadir=%{_datadir}/%{name} \
 	--enable-syslog=LOG_LOCAL6 \
 	%{?with_chasen:--with-chasen} \
 	%{?with_freetds:--with-freetds} \
@@ -209,18 +206,15 @@ find . -type d -name CVS | xargs rm -rf
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT{%{_localstatedir},%{htmldir},%{cgidir},%{_sysconfdir}} \
+install -d $RPM_BUILD_ROOT{%{_localstatedir},%{cgidir},%{_sysconfdir}} \
 	$RPM_BUILD_ROOT{/etc/cron.daily,%{_infodir}}
 
 %{__make} -j1 install \
 	DESTDIR=$RPM_BUILD_ROOT \
 	doc_FILES='$(HTML_ALL)'
 
-ln -sf %{_docdir}/%{name}-%{version}/html \
-	$RPM_BUILD_ROOT%{htmldir}/mnogodoc
-
-mv -f $RPM_BUILD_ROOT%{_bindir}/*.cgi \
-	$RPM_BUILD_ROOT%{cgidir}
+mv -f $RPM_BUILD_ROOT%{_bindir}/search.cgi \
+	$RPM_BUILD_ROOT%{cgidir}/mnogosearch.cgi
 
 install %{SOURCE1} $RPM_BUILD_ROOT/etc/cron.daily/mnogosearch-dbgen
 
@@ -255,9 +249,8 @@ EOF
 %attr(755,root,root) %{_sbindir}/indexer
 %attr(755,root,root) %{_bindir}/mconv
 %attr(755,root,root) %{_bindir}/mguesser
-%attr(755,root,root) %{cgidir}/search.cgi
+%attr(755,root,root) %{cgidir}/mnogosearch.cgi
 %{_datadir}/%{name}
-%{htmldir}/mnogodoc
 %attr(775,root,http) %dir %{_localstatedir}
 %dir %{_sysconfdir}
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/indexer.conf
