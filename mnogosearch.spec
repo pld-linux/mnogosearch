@@ -20,7 +20,7 @@ Summary:	Another one web indexing and searching system for a small domain or int
 Summary(pl.UTF-8):	Kolejny system indeksowania i przeszukiwania WWW dla małych domen i intranetu
 Name:		mnogosearch
 Version:	3.3.14
-Release:	2
+Release:	3
 License:	GPL v2+
 Group:		Networking/Utilities
 # Source0Download: http://www.mnogosearch.org/download.html
@@ -191,6 +191,7 @@ find . -type d -name CVS | xargs rm -rf
 # --with-readline (for SQL monitor) ?
 # --wiht-extra-charsets=big5,gb2312,gbk,japanese,euc-kr,gujarati,tscii ?
 
+%{__make} -j1 -C src libmnogocharset.la
 %{__make} -j1
 
 #  --with-solid[=DIR]	  Include Solid support.  DIR is the Solid base
