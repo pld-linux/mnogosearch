@@ -1,8 +1,9 @@
---- mnogosearch-3.3.7/src/Makefile.am.orig	2007-09-01 17:52:27.000000000 +0200
-+++ mnogosearch-3.3.7/src/Makefile.am	2008-09-18 20:03:05.211613660 +0200
-@@ -38,9 +38,25 @@
- mirror.c sqldbms.c chinese.c parsexml.c wild.c hash.c segment.c \
- sql-mysql.c sql-oracle.c sql-ibase.c sql-pgsql.c
+diff -urNp -x '*.orig' mnogosearch-3.3.14.org/src/Makefile.am mnogosearch-3.3.14/src/Makefile.am
+--- mnogosearch-3.3.14.org/src/Makefile.am	2013-03-30 15:10:18.000000000 +0100
++++ mnogosearch-3.3.14/src/Makefile.am	2021-10-05 22:44:49.937016015 +0200
+@@ -45,9 +45,25 @@ dbug.c string.c date.c suggest.c groupby
+ idn.c features.c message.c excerpt.c parsedocx.c parsertf.c
+ 
  EXTRA_libmnogosearch_la_SOURCES = efence.c ef_page.c ef_print.c
 -libmnogosearch_la_LIBADD = @efOBJ@ -L. -L.libs -lmnogocharset
 +libmnogosearch_la_LIBADD = @efOBJ@ libmnogocharset.la \
@@ -28,7 +29,7 @@
  
  libmnogocharset_la_SOURCES = uconv.c unidata.c sgml.c unicode.c \
  uconv-8bit.c uconv-alias.c uconv-big5.c uconv-eucjp.c uconv-euckr.c \
-@@ -75,20 +91,4 @@
+@@ -82,20 +98,4 @@ INCLUDES = -I$(srcdir)/../include \
  @CHASEN_INCLUDE@
  
  LIBS = @STATIC_LFLAGS@ \
